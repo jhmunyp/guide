@@ -1,0 +1,562 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>비밀번호 찾기 안내</title>
+  <meta name="description" content="모나 용평 홈페이지 비밀번호 찾기(재설정) 단계별 안내" />
+  <style>
+    :root{
+      --bg: #f6f7fb;
+      --card: #ffffff;
+      --text: #121826;
+      --muted: #667085;
+      --line: rgba(18,24,38,0.10);
+      --accent: #0f766e; /* 차분한 그린 */
+      --accent2:#0b4f49;
+      --shadow: 0 10px 25px rgba(16,24,40,0.10);
+      --shadow2: 0 2px 10px rgba(16,24,40,0.08);
+      --radius: 18px;
+      --radius2: 14px;
+      --max: 980px;
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", Segoe UI, Roboto, Helvetica, Arial, "Segoe UI Emoji";
+      background: var(--bg);
+      color: var(--text);
+      line-height:1.45;
+    }
+
+    /* 상단 */
+    .topbar{
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(246,247,251,0.90);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+    }
+    .topbar-inner{
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 12px 14px;
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+    .badge{
+      width: 36px; height: 36px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      box-shadow: var(--shadow2);
+      display:grid;
+      place-items:center;
+      color:white;
+      font-weight:800;
+      letter-spacing:-0.5px;
+      flex: 0 0 auto;
+    }
+    .title-wrap{ min-width: 0; }
+    .title{
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing:-0.4px;
+      margin:0;
+    }
+    .subtitle{
+      margin:2px 0 0 0;
+      font-size: 13px;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow:hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* 레이아웃 */
+    .container{
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 14px 14px 88px;
+    }
+
+    .hero{
+      margin-top: 10px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow2);
+      padding: 16px 16px;
+    }
+    .hero h2{
+      margin: 0 0 8px 0;
+      font-size: 20px;
+      letter-spacing:-0.5px;
+    }
+    .hero ul{
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+      font-size: 15px;
+    }
+    .hero li{ margin: 6px 0; }
+    .callout{
+      margin-top: 12px;
+      padding: 12px 12px;
+      border-radius: 14px;
+      background: rgba(15,118,110,0.08);
+      border: 1px solid rgba(15,118,110,0.18);
+      color: #0b3b37;
+      font-size: 15px;
+    }
+    .callout strong{ font-weight: 800; }
+
+    /* 단계 카드 */
+    .steps{
+      margin-top: 14px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .step{
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow2);
+      overflow: hidden;
+    }
+    .step-head{
+      display:flex;
+      align-items:flex-start;
+      gap: 12px;
+      padding: 14px 14px 10px;
+    }
+    .pill{
+      flex: 0 0 auto;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: rgba(15,118,110,0.10);
+      border: 1px solid rgba(15,118,110,0.22);
+      color: #0b3b37;
+      font-weight: 800;
+      font-size: 14px;
+      letter-spacing:-0.2px;
+    }
+    .step-text{ min-width:0; }
+    .step-title{
+      margin: 0;
+      font-size: 17px;
+      font-weight: 900;
+      letter-spacing:-0.4px;
+    }
+    .step-desc{
+      margin: 6px 0 0 0;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    /* 이미지 */
+    .img-wrap{
+      padding: 0 14px 14px;
+    }
+    .img-btn{
+      display:block;
+      width: 100%;
+      border-radius: var(--radius2);
+      overflow:hidden;
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      background: #fff;
+      cursor: zoom-in;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .img-btn img{
+      width:100%;
+      height:auto;
+      display:block;
+    }
+
+    /* 하단 고정 전화 버튼 */
+    .bottom-bar{
+      position: fixed;
+      left: 0; right: 0; bottom: 0;
+      z-index: 60;
+      padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
+      background: rgba(246,247,251,0.92);
+      backdrop-filter: blur(10px);
+      border-top: 1px solid var(--line);
+    }
+    .bottom-inner{
+      max-width: var(--max);
+      margin: 0 auto;
+      display:flex;
+      gap: 10px;
+      align-items:center;
+    }
+    .btn{
+      border: 0;
+      border-radius: 14px;
+      padding: 14px 14px;
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing:-0.3px;
+      text-decoration:none;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap: 10px;
+      box-shadow: var(--shadow2);
+      white-space: nowrap;
+      -webkit-tap-highlight-color: transparent;
+      user-select:none;
+    }
+    .btn-call{
+      flex: 1 1 auto;
+      color: #ffffff;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+    }
+    .btn-top{
+      flex: 0 0 auto;
+      color: var(--text);
+      background: #ffffff;
+      border: 1px solid var(--line);
+      padding: 14px 16px;
+    }
+    .btn small{
+      font-weight: 700;
+      opacity: 0.95;
+      font-size: 13px;
+    }
+
+    /* 확대 모달 */
+    dialog{
+      border: none;
+      border-radius: 16px;
+      padding: 0;
+      width: min(980px, calc(100vw - 18px));
+      max-height: calc(100vh - 18px);
+      box-shadow: 0 30px 80px rgba(0,0,0,0.35);
+      overflow:hidden;
+    }
+    dialog::backdrop{
+      background: rgba(0,0,0,0.55);
+    }
+    .modal{
+      background:#0b1020;
+    }
+    .modal-top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding: 10px 10px;
+      background: rgba(0,0,0,0.40);
+    }
+    .modal-title{
+      color: rgba(255,255,255,0.92);
+      font-weight: 800;
+      font-size: 14px;
+      letter-spacing:-0.2px;
+      margin:0;
+    }
+    .close{
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(255,255,255,0.10);
+      color:#fff;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-weight: 900;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .modal-img{
+      width: 100%;
+      height: auto;
+      display:block;
+      background: #0b1020;
+    }
+    .modal-hint{
+      padding: 10px 12px 12px;
+      color: rgba(255,255,255,0.78);
+      font-size: 13px;
+    }
+
+    /* 데스크탑 약간 넓게 */
+    @media (min-width: 820px){
+      .hero{ padding: 18px 18px; }
+      .step-head{ padding: 16px 16px 10px; }
+      .img-wrap{ padding: 0 16px 16px; }
+      .title{ font-size: 19px; }
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      *{ scroll-behavior: auto !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="badge">PW</div>
+      <div class="title-wrap">
+        <p class="title">비밀번호 찾기 안내</p>
+        <p class="subtitle">아래 ‘단계’를 그대로 따라하면 비밀번호를 바꿀 수 있어요.</p>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero" aria-label="안내">
+      <h2>천천히 따라해 주세요</h2>
+      <ul>
+        <li>각 <b>단계</b>의 화면과 <b>같이</b> 진행하면 됩니다.</li>
+        <li>화면이 작으면 <b>이미지를 눌러 크게 보기</b>가 가능합니다.</li>
+        <li>진행이 어렵다면 아래 <b>고객센터 전화</b> 버튼을 눌러주세요.</li>
+      </ul>
+      <div class="callout">
+        <strong>주의</strong> 인증번호는 고객센터/직원이 요구하지 않습니다. 전화·문자 사칭에 주의하세요.
+      </div>
+    </section>
+
+    <section class="steps" aria-label="단계 안내">
+      <!-- 단계 카드들: JS로 이미지 확대 -->
+      <article class="step" id="s1">
+        <div class="step-head">
+          <div class="pill">단계 1</div>
+          <div class="step-text">
+            <p class="step-title">로그인 화면에서 ‘비밀번호 찾기’</p>
+            <p class="step-desc">로그인 화면에서 <b>비밀번호 찾기</b>를 눌러주세요.</p>
+          </div>
+        </div>
+        <div class="img-wrap">
+          <a class="img-btn" href="#" data-title="단계 1" data-img="1.png" aria-label="단계 1 이미지 확대">
+            <img src="1.png" alt="단계 1: 로그인 화면에서 비밀번호 찾기 선택" loading="lazy">
+          </a>
+        </div>
+      </article>
+
+      <article class="step" id="s2">
+        <div class="step-head">
+          <div class="pill">단계 2</div>
+          <div class="step-text">
+            <p class="step-title">비밀번호찾기 화면에서 인증 방식 선택</p>
+            <p class="step-desc">아이디 입력 후 <b>휴대폰 인증</b> 또는 <b>아이핀(IPIN) 인증</b>을 선택합니다.</p>
+          </div>
+        </div>
+        <div class="img-wrap">
+          <a class="img-btn" href="#" data-title="단계 2" data-img="2.png" aria-label="단계 2 이미지 확대">
+            <img src="2.png" alt="단계 2: 인증 방식 선택" loading="lazy">
+          </a>
+        </div>
+      </article>
+
+      <article class="step" id="s3">
+        <div class="step-head">
+          <div class="pill">단계 3</div>
+          <div class="step-text">
+            <p class="step-title">NICE 본인인증에서 인증 수단 선택</p>
+            <p class="step-desc"><b>휴대폰 본인 확인</b> 또는 <b>공동인증서</b> 중 선택합니다.</p>
+          </div>
+        </div>
+        <div class="img-wrap">
+          <a class="img-btn" href="#" data-title="단계 3" data-img="3.png" aria-label="단계 3 이미지 확대">
+            <img src="3.png" alt="단계 3: NICE 본인인증 수단 선택" loading="lazy">
+          </a>
+        </div>
+      </article>
+
+      <article class="step" id="s4">
+        <div class="step-head">
+          <div class="pill">단계 4</div>
+          <div class="step-text">
+            <p class="step-title">통신사 선택</p>
+            <p class="step-desc">이용 중인 통신사를 선택합니다. (알뜰폰도 선택 가능)</p>
+          </div>
+        </div>
+        <div class="img-wrap">
+          <a class="img-btn" href="#" data-title="단계 4" data-img="4.png" aria-label="단계 4 이미지 확대">
+            <img src="4.png" alt="단계 4: 통신사 선택" loading="lazy">
+          </a>
+        </div>
+      </article>
+
+      <article class="step" id="s5">
+        <div class="step-head">
+          <div class="pill">단계 5</div>
+          <div class="step-text">
+            <p class="step-title">인증 방법 선택</p>
+            <p class="step-desc"><b>PASS</b>, <b>QR코드</b>, <b>문자(SMS)</b> 중 선택합니다.</p>
+          </div>
+        </div>
+        <div class="img-wrap">
+          <a class="img-btn" href="#" data-title="단계 5" data-img="5.png" aria-label="단계 5 이미지 확대">
+            <img src="5.png" alt="단계 5: 인증 방법 선택" loading="lazy">
+          </a>
+        </div>
+      </article>
+
+      <article class="step" id="s6">
+        <div class="step-head">
+          <div class="pill">단계 6</div>
+          <div class="step-text">
+            <p class="step-title">문자(SMS) 인증 선택 후 ‘동의(필수)’ 체크</p>
+            <p class="step-desc">아래 <b>본인확인 이용 동의(필수)</b>를 체크하고 <b>다음</b>을 누릅니다.</p>
+          </div>
+        </div>
+        <div class="img-wrap">
+          <a class="img-btn" href="#" data-title="단계 6" data-img="6.png" aria-label="단계 6 이미지 확대">
+            <img src="6.png" alt="단계 6: 동의 체크 및 다음" loading="lazy">
+          </a>
+        </div>
+      </article>
+
+      <article class="step" id="s7">
+        <div class="step-head">
+          <div class="pill">단계 7</div>
+          <div class="step-text">
+            <p class="step-title">정보 입력</p>
+            <p class="step-desc">이름/생년월일/휴대폰번호/보안문자를 입력하고 <b>확인</b>을 누릅니다.</p>
+          </div>
+        </div>
+        <div class="img-wrap">
+          <a class="img-btn" href="#" data-title="단계 7" data-img="7.png" aria-label="단계 7 이미지 확대">
+            <img src="7.png" alt="단계 7: 정보 입력" loading="lazy">
+          </a>
+        </div>
+      </article>
+
+      <article class="step" id="s8">
+        <div class="step-head">
+          <div class="pill">단계 8</div>
+          <div class="step-text">
+            <p class="step-title">휴대폰 문자로 인증번호 받기</p>
+            <p class="step-desc">휴대폰으로 온 <b>인증번호(6자리)</b>를 확인합니다.</p>
+          </div>
+        </div>
+        <div class="img-wrap">
+          <a class="img-btn" href="#" data-title="단계 8" data-img="10.jpg" aria-label="단계 8 이미지 확대">
+            <img src="10.jpg" alt="단계 8: 휴대폰 문자로 인증번호 수신" loading="lazy">
+          </a>
+        </div>
+      </article>
+
+      <article class="step" id="s9">
+        <div class="step-head">
+          <div class="pill">단계 9</div>
+          <div class="step-text">
+            <p class="step-title">인증번호 입력</p>
+            <p class="step-desc">받은 인증번호 6자리를 입력하고 <b>확인</b>을 누릅니다.</p>
+          </div>
+        </div>
+        <div class="img-wrap">
+          <a class="img-btn" href="#" data-title="단계 9" data-img="11.png" aria-label="단계 9 이미지 확대">
+            <img src="11.png" alt="단계 9: 인증번호 입력" loading="lazy">
+          </a>
+        </div>
+      </article>
+
+      <article class="step" id="s10">
+        <div class="step-head">
+          <div class="pill">단계 10</div>
+          <div class="step-text">
+            <p class="step-title">본인 인증 완료</p>
+            <p class="step-desc">인증이 완료되면 비밀번호 변경 화면으로 넘어갑니다.</p>
+          </div>
+        </div>
+        <div class="img-wrap">
+          <a class="img-btn" href="#" data-title="단계 10" data-img="12.png" aria-label="단계 10 이미지 확대">
+            <img src="12.png" alt="단계 10: 본인 인증 완료 화면" loading="lazy">
+          </a>
+        </div>
+      </article>
+
+      <article class="step" id="s11">
+        <div class="step-head">
+          <div class="pill">단계 11</div>
+          <div class="step-text">
+            <p class="step-title">새 비밀번호 입력 후 변경</p>
+            <p class="step-desc">새 비밀번호와 확인을 입력하고 <b>변경</b>을 누릅니다.</p>
+          </div>
+        </div>
+        <div class="img-wrap">
+          <a class="img-btn" href="#" data-title="단계 11" data-img="9.png" aria-label="단계 11 이미지 확대">
+            <img src="9.png" alt="단계 11: 새 비밀번호 입력" loading="lazy">
+          </a>
+        </div>
+      </article>
+
+      <article class="step" id="s12">
+        <div class="step-head">
+          <div class="pill">단계 12</div>
+          <div class="step-text">
+            <p class="step-title">완료</p>
+            <p class="step-desc">이제 로그인 화면에서 새 비밀번호로 로그인해 주세요.</p>
+          </div>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <div class="bottom-bar" role="navigation" aria-label="하단 메뉴">
+    <div class="bottom-inner">
+      <!-- TODO: 실제 고객센터 번호로 변경 -->
+      <a class="btn btn-call" href="tel:1588-0000" aria-label="고객센터 전화 걸기">
+        📞 고객센터 전화
+        <small>도움이 필요하시면 눌러주세요</small>
+      </a>
+      <a class="btn btn-top" href="#top" onclick="window.scrollTo({top:0,behavior:'smooth'}); return false;" aria-label="맨 위로 이동">⬆︎</a>
+    </div>
+  </div>
+
+  <dialog id="imgModal" class="modal" aria-label="이미지 확대">
+    <div class="modal-top">
+      <p class="modal-title" id="modalTitle">이미지</p>
+      <button class="close" id="modalClose" type="button">닫기 ✕</button>
+    </div>
+    <img class="modal-img" id="modalImg" alt="" />
+    <div class="modal-hint">팁: 확대된 화면은 손가락으로 확대(핀치)할 수 있어요.</div>
+  </dialog>
+
+  <script>
+    (function(){
+      const modal = document.getElementById('imgModal');
+      const modalImg = document.getElementById('modalImg');
+      const modalTitle = document.getElementById('modalTitle');
+      const closeBtn = document.getElementById('modalClose');
+
+      function openModal(title, imgSrc, altText){
+        modalTitle.textContent = title + " (확대)";
+        modalImg.src = imgSrc;
+        modalImg.alt = altText || title;
+        if (typeof modal.showModal === 'function') modal.showModal();
+        else modal.setAttribute('open', 'open');
+      }
+      function closeModal(){
+        if (typeof modal.close === 'function') modal.close();
+        else modal.removeAttribute('open');
+      }
+
+      document.querySelectorAll('.img-btn').forEach(a=>{
+        a.addEventListener('click', (e)=>{
+          e.preventDefault();
+          openModal(a.dataset.title || '이미지', a.dataset.img, a.querySelector('img')?.alt || '');
+        });
+      });
+
+      closeBtn.addEventListener('click', closeModal);
+      modal.addEventListener('click', (e)=>{
+        const rect = modal.getBoundingClientRect();
+        // 배경 클릭 시 닫기
+        if (e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom){
+          closeModal();
+        }
+      });
+      document.addEventListener('keydown', (e)=>{
+        if (e.key === 'Escape' && modal.hasAttribute('open')) closeModal();
+      });
+    })();
+  </script>
+</body>
+</html>
