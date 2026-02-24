@@ -39,19 +39,21 @@ body{
   max-width: var(--max);
   margin: 0 auto;
   padding: 12px 14px;
+
   display:flex;
-  align-items:center;
-  gap:12px;
+  flex-direction: column;   /* ⭐ 로고 위, 텍스트 아래 */
+  align-items: flex-start;  /* ⭐ 왼쪽 정렬 */
+  gap: 6px;
 }
 
-/* ✅ 초록 박스(.badge) 완전 제거하고 로고만 사용 */
+/* 로고만 사용 */
 .logo{
   flex: 0 0 auto;
   display:flex;
   align-items:center;
 }
 .logo img{
-  height: 28px;          /* 필요하면 24~34 사이로 조절 */
+  height: 28px;   /* 필요하면 24~34 사이로 조절 */
   width: auto;
   display:block;
 }
