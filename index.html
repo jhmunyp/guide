@@ -43,15 +43,17 @@ body{font-family:"Noto Sans KR",system-ui,sans-serif;background:var(--bg);color:
 .hdr span{font-weight:900;font-size:15px;color:var(--navy)}
 .tabs{display:flex;border-top:1px solid #f0ece6;background:#fff}
 .tab{flex:1;border:0;background:none;cursor:pointer;padding:11px 4px;font-weight:900;font-size:13px;color:#999;border-bottom:3px solid transparent;display:flex;flex-direction:column;align-items:center;gap:3px}
-.tab .t{font-size:18px}
+.tab .t{width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;margin-bottom:3px;}
+.tab .t img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block;}
 .tab.on{color:var(--navy);border-bottom-color:var(--gold)}
 
 .notice{margin:16px 16px 0;padding:12px 14px;border-left:4px solid var(--gold);background:linear-gradient(180deg,#fffbf4,#fff7ea);border-radius:0 12px 12px 0;box-shadow:0 2px 12px rgba(16,24,40,.06)}
 .notice p{font-size:15px;line-height:1.7;color:#5a4220;font-weight:700}
 
 .wrap{padding:18px 16px 20px}
-.flow-title{font-family:"Noto Serif KR",serif;font-size:16px;font-weight:900;color:var(--navy);border-bottom:2px solid var(--gold);padding-bottom:8px;margin-bottom:16px}
-
+.flow-title{font-family:"Noto Serif KR",serif;font-size:16px;font-weight:900;color:var(--navy);border-bottom:2px solid var(--gold);padding-bottom:8px;margin-bottom:16pxdisplay:flex;align-items:center;gap:8px;}
+.flow-icon{width:20px;height:20px;object-fit:contain;}
+  
 .card{background:var(--card);border:1px solid rgba(232,228,222,.9);border-radius:16px;overflow:hidden;box-shadow:0 10px 25px rgba(16,24,40,.08);margin-bottom:14px;opacity:0;transform:translateY(16px);transition:.35s}
 .card.in{opacity:1;transform:none}
 .head{display:flex;gap:12px;align-items:center;padding:14px 15px 11px;border-bottom:1px solid rgba(245,242,238,.9);background:linear-gradient(180deg,#fff,#fbfaf7)}
@@ -171,7 +173,7 @@ body{font-family:"Noto Sans KR",system-ui,sans-serif;background:var(--bg);color:
       </div>
     </div>
     <nav class="tabs">
-      <button type="button" class="tab on" data-tab="app"><span class="t">📱</span>모바일 앱</button>
+      <button type="button" class="tab on" data-tab="app"><span class="t"><img src="images/logo/mona_app.jpg" alt=""></span>모바일 앱</button>
       <button type="button" class="tab" data-tab="mweb"><span class="t">🌐</span>모바일 웹</button>
       <button type="button" class="tab" data-tab="web"><span class="t">💻</span>홈페이지(PC)</button>
     </nav>
@@ -195,7 +197,7 @@ body{font-family:"Noto Sans KR",system-ui,sans-serif;background:var(--bg);color:
 <script>
 const FLOWS={
   app:{
-    title:"📱 모바일 앱 — 비밀번호 찾기",
+    title: '<img class="flow-icon" src="images/logo/mona_app.jpg"> 모바일 앱 — 비밀번호 찾기',
     steps:[
       { t:'모나용평 앱 실행 후<br>오른쪽 위 메뉴(☰) 누르기', img:'images/app/app_1.jpg', alt:'앱홈',
         hl:{ top:1, right:8, w:11, h:5.5, label:'☰ 누르세요!' } },
