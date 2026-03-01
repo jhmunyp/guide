@@ -151,8 +151,8 @@ body{font-family:"Noto Sans KR",system-ui,sans-serif;background:var(--bg);color:
 .help a{display:inline-flex;gap:8px;align-items:center;background:var(--gold);color:#fff;text-decoration:none;font-size:20px;font-weight:900;padding:12px 26px;border-radius:999px;box-shadow:0 10px 20px rgba(184,150,90,.25)}
 .footer{border-top:1px solid rgba(232,228,222,.8);text-align:center;padding:14px;font-size:12px;color:#98a2b3}
 
-/* HL Editor */
-.hl-editor{
+/* HL Editor (개발모드에서만 표시) */
+body.dev .hl-editor{
   position:fixed; right:14px; bottom:14px; z-index:9999;
   display:flex; gap:8px; align-items:center;
   background:rgba(17,24,39,.92);
@@ -162,16 +162,16 @@ body{font-family:"Noto Sans KR",system-ui,sans-serif;background:var(--bg);color:
   box-shadow:0 18px 40px rgba(0,0,0,.35);
   font-size:12px; font-weight:800;
 }
-.hl-editor button{
+body.dev .hl-editor button{
   border:0; cursor:pointer; border-radius:12px;
   padding:8px 10px; font-weight:900;
   background:rgba(255,255,255,.10); color:#fff;
 }
-.hl-editor button:active{ transform:scale(.98); }
-.hl-editor .on{ background:#b8965a; }
-.hl-editor .meta{ opacity:.9; font-weight:700; }
+body.dev .hl-editor button:active{ transform:scale(.98); }
+body.dev .hl-editor .on{ background:#b8965a; }
+body.dev .hl-editor .meta{ opacity:.9; font-weight:700; }
 
-.hl-rect{
+body.dev .hl-rect{
   position:absolute; z-index:50; pointer-events:none;
   border:2px dashed rgba(255,214,90,.95);
   box-shadow:0 12px 28px rgba(255,196,40,.18);
@@ -241,6 +241,9 @@ body{font-family:"Noto Sans KR",system-ui,sans-serif;background:var(--bg);color:
 </section>
 
 <script>
+/* 개발 true / 배포 false (이 한 줄만 바꾸면 됨) */
+const DEV_MODE = false;
+
 const FLOWS={
   app:{
     title:'<img class="flow-icon" src="images/logo/mona_app.jpg"> 모바일 앱 — 비밀번호 찾기',
@@ -349,6 +352,8 @@ const $$=(s,p=document)=>Array.from(p.querySelectorAll(s));
 const landing=$("#landing"), manual=$("#manual"), flowTitle=$("#flowTitle"), flowRoot=$("#flowRoot");
 let io;
 
+if(DEV_MODE) document.body.classList.add("dev");
+
 const esc=s=>(s||"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;");
 
 function setTab(k){ $$(".tab").forEach(b=>b.classList.toggle("on",b.dataset.tab===k)); }
@@ -450,7 +455,9 @@ function buildSpot(){
     const layer=$(".spot-layer",p);
     if(!s || !layer) return;
 
-    $$(".ring,.hl-rect",s).forEach(x=>x.remove());
+    if(DEV_MODE) $$(".ring,.hl-rect",s).forEach(x=>x.remove());
+    else $$(".ring",s).forEach(x=>x.remove());
+
     $$(".callout",layer).forEach(x=>x.remove());
 
     const hl=$("[data-hl]",s);
@@ -525,179 +532,189 @@ $("#back").addEventListener("click",back);
 $$(".tab").forEach(b=>b.addEventListener("click",()=>render(b.dataset.tab)));
 addEventListener("resize",()=>manual.style.display==="block"&&buildSpot());
 
-/* HL Editor (네 코드 그대로) */
-let HL_EDIT=false;
-let hlTarget=null; // { key, idx, st, screenEl }
+/* HL Editor (DEV_MODE에서만 로드/동작) */
+if(DEV_MODE){
+  let HL_EDIT=false;
+  let hlTarget=null;
 
-function ensureEditorUI(){
-  if(document.querySelector(".hl-editor")) return;
-  const ui=document.createElement("div");
-  ui.className="hl-editor";
-  ui.innerHTML=`
-    <button type="button" id="hlToggle">HL 편집</button>
-    <button type="button" id="hlCopy">Copy</button>
-    <span class="meta">Alt+클릭: 단계 선택 · Shift+드래그: 영역</span>
-  `;
-  document.body.appendChild(ui);
+  function ensureEditorUI(){
+    if(document.querySelector(".hl-editor")) return;
+    const ui=document.createElement("div");
+    ui.className="hl-editor";
+    ui.innerHTML=`
+      <button type="button" id="hlToggle">HL 편집</button>
+      <button type="button" id="hlCopy">Copy</button>
+      <span class="meta">Alt+클릭: 단계 선택 · Shift+드래그: 영역</span>
+    `;
+    document.body.appendChild(ui);
 
-  const t=$("#hlToggle"), c=$("#hlCopy");
-  t.addEventListener("click",()=>{ HL_EDIT=!HL_EDIT; t.classList.toggle("on",HL_EDIT); });
-  c.addEventListener("click",async ()=>{
-    if(!hlTarget) return alert("Alt+클릭으로 편집할 단계를 먼저 선택하세요.");
-    const hl=hlTarget.st.hl;
-    const obj={ top:+hl.top, ...(hl.left!=null?{left:+hl.left}:{right:+hl.right}), w:+hl.w, h:+hl.h };
-    const txt=JSON.stringify(obj);
-    try{
-      await navigator.clipboard.writeText(txt);
-      c.textContent="Copied!";
-      setTimeout(()=>c.textContent="Copy",900);
-    }catch(e){
-      console.log("COPY:",txt);
-      alert("클립보드 권한이 없어 콘솔에 출력했습니다.");
-    }
-  });
+    const t=$("#hlToggle"), c=$("#hlCopy");
+    t.addEventListener("click",()=>{ HL_EDIT=!HL_EDIT; t.classList.toggle("on",HL_EDIT); });
+
+    c.addEventListener("click",async ()=>{
+      if(!hlTarget) return alert("Alt+클릭으로 편집할 단계를 먼저 선택하세요.");
+      const hl=hlTarget.st.hl;
+      const obj={ top:+hl.top, ...(hl.left!=null?{left:+hl.left}:{right:+hl.right}), w:+hl.w, h:+hl.h };
+      const txt=JSON.stringify(obj);
+      try{
+        await navigator.clipboard.writeText(txt);
+        c.textContent="Copied!";
+        setTimeout(()=>c.textContent="Copy",900);
+      }catch(e){
+        console.log("COPY:",txt);
+        alert("클립보드 권한이 없어 콘솔에 출력했습니다.");
+      }
+    });
+  }
+
+  function getCurrentFlowKey(){
+    const on=document.querySelector(".tab.on");
+    return on?on.dataset.tab:"app";
+  }
+
+  function findStepIndexFromScreen(screenEl){
+    const cards=Array.from(document.querySelectorAll("#flowRoot .card"));
+    const card=screenEl.closest(".card");
+    return cards.indexOf(card);
+  }
+
+  function selectTargetFromEvent(e){
+    const screen=e.target.closest(".screen");
+    if(!screen) return null;
+    const key=getCurrentFlowKey();
+    const idx=findStepIndexFromScreen(screen);
+    if(idx<0) return null;
+    const st=FLOWS[key].steps[idx];
+    return { key, idx, st, screenEl: screen };
+  }
+
+  function percentRectFromDrag(screenEl,a,b){
+    const r=screenEl.getBoundingClientRect();
+    const x1=Math.max(0, Math.min(a.x,b.x)-r.left);
+    const y1=Math.max(0, Math.min(a.y,b.y)-r.top);
+    const x2=Math.min(r.width,  Math.max(a.x,b.x)-r.left);
+    const y2=Math.min(r.height, Math.max(a.y,b.y)-r.top);
+
+    const left=(x1/r.width)*100;
+    const top=(y1/r.height)*100;
+    const w=((x2-x1)/r.width)*100;
+    const h=((y2-y1)/r.height)*100;
+
+    const round=v=>Math.round(v*10)/10;
+    return { top:round(top), left:round(left), w:round(w), h:round(h) };
+  }
+
+  function applyHlToStep(st,rect){
+    st.hl.top=rect.top;
+    st.hl.left=rect.left;
+    delete st.hl.right;
+    st.hl.w=rect.w;
+    st.hl.h=rect.h;
+  }
+
+  function applyClipVarsToScreen(screenEl,hl){
+    const top=+hl.top, left=(hl.left!=null?+hl.left:(100-(+hl.right)-(+hl.w))), w=+hl.w, h=+hl.h;
+    screenEl.style.setProperty("--ct", top+"%");
+    screenEl.style.setProperty("--cl", left+"%");
+    screenEl.style.setProperty("--cb", (100-(top+h))+"%");
+    screenEl.style.setProperty("--cr", (100-(left+w))+"%");
+  }
+
+  function drawTempRect(screenEl,hl){
+    let box=screenEl.querySelector(".hl-rect");
+    if(!box){ box=document.createElement("div"); box.className="hl-rect"; screenEl.appendChild(box); }
+    const left=(hl.left!=null?hl.left:(100-hl.right-hl.w));
+    box.style.cssText=`top:${hl.top}%;left:${left}%;width:${hl.w}%;height:${hl.h}%;`;
+  }
+
+  function refreshOne(screenEl){
+    if(!hlTarget) return;
+    applyClipVarsToScreen(screenEl, hlTarget.st.hl);
+    drawTempRect(screenEl, hlTarget.st.hl);
+  }
+
+  function enableHLSelection(){
+    document.addEventListener("click",(e)=>{
+      if(!HL_EDIT || !e.altKey) return;
+      const t=selectTargetFromEvent(e);
+      if(!t) return;
+      hlTarget=t;
+      refreshOne(hlTarget.screenEl);
+      e.preventDefault(); e.stopPropagation();
+    },true);
+  }
+
+  function enableHLDrag(){
+    let dragging=false, start=null;
+
+    const move=(clientX,clientY)=>{
+      if(!dragging || !hlTarget) return;
+      const rect=percentRectFromDrag(hlTarget.screenEl, start, {x:clientX,y:clientY});
+      applyHlToStep(hlTarget.st, rect);
+      refreshOne(hlTarget.screenEl);
+    };
+
+    const end=()=>{
+      if(!dragging) return;
+      dragging=false; start=null;
+      buildSpot();
+    };
+
+    document.addEventListener("mousedown",(e)=>{
+      if(!HL_EDIT || !e.shiftKey) return;
+      const t=selectTargetFromEvent(e);
+      if(!t) return;
+      hlTarget=t;
+      dragging=true;
+      start={x:e.clientX,y:e.clientY};
+
+      const rect=percentRectFromDrag(hlTarget.screenEl, start, {x:start.x+1,y:start.y+1});
+      applyHlToStep(hlTarget.st, rect);
+      refreshOne(hlTarget.screenEl);
+
+      e.preventDefault(); e.stopPropagation();
+    },true);
+
+    document.addEventListener("mousemove",(e)=>move(e.clientX,e.clientY),true);
+    document.addEventListener("mouseup",end,true);
+
+    /* 모바일: touchstart에서 바로 1px rect 생성(반응 보이게) */
+    document.addEventListener("touchstart",(e)=>{
+      if(!HL_EDIT) return;
+      const t=selectTargetFromEvent(e);
+      if(!t) return;
+      hlTarget=t;
+      dragging=true;
+
+      const touch=e.touches[0];
+      start={x:touch.clientX,y:touch.clientY};
+
+      const rect=percentRectFromDrag(hlTarget.screenEl, start, {x:start.x+1,y:start.y+1});
+      applyHlToStep(hlTarget.st, rect);
+      refreshOne(hlTarget.screenEl);
+
+      e.preventDefault();
+    },{passive:false});
+
+    document.addEventListener("touchmove",(e)=>{
+      if(!dragging || !hlTarget) return;
+      const touch=e.touches[0];
+      move(touch.clientX,touch.clientY);
+      e.preventDefault();
+    },{passive:false});
+
+    document.addEventListener("touchend",(e)=>{
+      end();
+      e.preventDefault();
+    },{passive:false});
+  }
+
+  (function initHLEditor(){
+    ensureEditorUI();
+    enableHLSelection();
+    enableHLDrag();
+  })();
 }
-
-function getCurrentFlowKey(){
-  const on=document.querySelector(".tab.on");
-  return on?on.dataset.tab:"app";
-}
-
-function findStepIndexFromScreen(screenEl){
-  const cards=Array.from(document.querySelectorAll("#flowRoot .card"));
-  const card=screenEl.closest(".card");
-  return cards.indexOf(card);
-}
-
-function selectTargetFromEvent(e){
-  const screen=e.target.closest(".screen");
-  if(!screen) return null;
-  const key=getCurrentFlowKey();
-  const idx=findStepIndexFromScreen(screen);
-  if(idx<0) return null;
-  const st=FLOWS[key].steps[idx];
-  return { key, idx, st, screenEl: screen };
-}
-
-function percentRectFromDrag(screenEl,a,b){
-  const r=screenEl.getBoundingClientRect();
-  const x1=Math.max(0, Math.min(a.x,b.x)-r.left);
-  const y1=Math.max(0, Math.min(a.y,b.y)-r.top);
-  const x2=Math.min(r.width,  Math.max(a.x,b.x)-r.left);
-  const y2=Math.min(r.height, Math.max(a.y,b.y)-r.top);
-
-  const left=(x1/r.width)*100;
-  const top=(y1/r.height)*100;
-  const w=((x2-x1)/r.width)*100;
-  const h=((y2-y1)/r.height)*100;
-
-  const round=v=>Math.round(v*10)/10;
-  return { top:round(top), left:round(left), w:round(w), h:round(h) };
-}
-
-function applyHlToStep(st,rect){
-  st.hl.top=rect.top;
-  st.hl.left=rect.left;
-  delete st.hl.right;
-  st.hl.w=rect.w;
-  st.hl.h=rect.h;
-}
-
-function applyClipVarsToScreen(screenEl,hl){
-  const top=+hl.top, left=(hl.left!=null?+hl.left:(100-(+hl.right)-(+hl.w))), w=+hl.w, h=+hl.h;
-  screenEl.style.setProperty("--ct", top+"%");
-  screenEl.style.setProperty("--cl", left+"%");
-  screenEl.style.setProperty("--cb", (100-(top+h))+"%");
-  screenEl.style.setProperty("--cr", (100-(left+w))+"%");
-}
-
-function drawTempRect(screenEl,hl){
-  let box=screenEl.querySelector(".hl-rect");
-  if(!box){ box=document.createElement("div"); box.className="hl-rect"; screenEl.appendChild(box); }
-  const left=(hl.left!=null?hl.left:(100-hl.right-hl.w));
-  box.style.cssText=`top:${hl.top}%;left:${left}%;width:${hl.w}%;height:${hl.h}%;`;
-}
-
-function refreshOne(screenEl){
-  if(!hlTarget) return;
-  applyClipVarsToScreen(screenEl, hlTarget.st.hl);
-  drawTempRect(screenEl, hlTarget.st.hl);
-}
-
-function enableHLSelection(){
-  document.addEventListener("click",(e)=>{
-    if(!HL_EDIT || !e.altKey) return;
-    const t=selectTargetFromEvent(e);
-    if(!t) return;
-    hlTarget=t;
-    refreshOne(hlTarget.screenEl);
-    e.preventDefault(); e.stopPropagation();
-  },true);
-}
-
-function enableHLDrag(){
-  let dragging=false, start=null;
-
-  const move=(clientX,clientY)=>{
-    if(!dragging || !hlTarget) return;
-    const rect=percentRectFromDrag(hlTarget.screenEl, start, {x:clientX,y:clientY});
-    applyHlToStep(hlTarget.st, rect);
-    refreshOne(hlTarget.screenEl);
-  };
-
-  const end=()=>{
-    if(!dragging) return;
-    dragging=false; start=null;
-    buildSpot();
-  };
-
-  document.addEventListener("mousedown",(e)=>{
-    if(!HL_EDIT || !e.shiftKey) return;
-    const t=selectTargetFromEvent(e);
-    if(!t) return;
-    hlTarget=t;
-    dragging=true;
-    start={x:e.clientX,y:e.clientY};
-
-    const rect=percentRectFromDrag(hlTarget.screenEl, start, {x:start.x+1,y:start.y+1});
-    applyHlToStep(hlTarget.st, rect);
-    refreshOne(hlTarget.screenEl);
-
-    e.preventDefault(); e.stopPropagation();
-  },true);
-
-  document.addEventListener("mousemove",(e)=>move(e.clientX,e.clientY),true);
-  document.addEventListener("mouseup",end,true);
-
-  document.addEventListener("touchstart",(e)=>{
-    if(!HL_EDIT) return;
-    const t=selectTargetFromEvent(e);
-    if(!t) return;
-    hlTarget=t;
-    dragging=true;
-    const touch=e.touches[0];
-    start={x:touch.clientX,y:touch.clientY};
-    e.preventDefault();
-  },{passive:false});
-
-  document.addEventListener("touchmove",(e)=>{
-    if(!dragging || !hlTarget) return;
-    const touch=e.touches[0];
-    move(touch.clientX,touch.clientY);
-    e.preventDefault();
-  },{passive:false});
-
-  document.addEventListener("touchend",(e)=>{
-    end();
-    e.preventDefault();
-  },{passive:false});
-}
-
-(function initHLEditor(){
-  ensureEditorUI();
-  enableHLSelection();
-  enableHLDrag();
-})();
 </script>
 </body>
 </html>
