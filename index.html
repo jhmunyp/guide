@@ -27,8 +27,8 @@ body{font-family:"Noto Sans KR",system-ui,sans-serif;background:var(--bg);color:
 .choice-grid{width:100%;max-width:380px;display:flex;flex-direction:column;gap:13px}
 .choice-btn{width:100%;display:flex;gap:15px;align-items:center;background:#ffffff0d;border:1.5px solid #ffffff18;border-radius:16px;padding:18px 20px;cursor:pointer;transition:.2s;text-align:left}
 .choice-btn:active{background:var(--gold);border-color:var(--gold);transform:scale(.98)}
-.choice-icon{width:52px;height:52px; border-radius:13px;background:#ffffff12;display:flex;align-items:center;justify-content:center;padding:6px;}
-.choice-icon img{max-width:100%;max-height:100%;object-fit:contain;}
+.choice-icon{width:52px;height:52px;border-radius:13px;background:#ffffff12;display:flex;align-items:center;justify-content:center;padding:6px}
+.choice-icon img{max-width:100%;max-height:100%;object-fit:contain;display:block}
 .choice-name{color:#fff;font-weight:900;font-size:19px;margin-bottom:3px}
 .choice-desc{color:#aabbd0;font-size:13px;line-height:1.5}
 .choice-arrow{margin-left:auto;color:#445577;font-size:20px}
@@ -43,17 +43,21 @@ body{font-family:"Noto Sans KR",system-ui,sans-serif;background:var(--bg);color:
 .hdr span{font-weight:900;font-size:15px;color:var(--navy)}
 .tabs{display:flex;border-top:1px solid #f0ece6;background:#fff}
 .tab{flex:1;border:0;background:none;cursor:pointer;padding:11px 4px;font-weight:900;font-size:13px;color:#999;border-bottom:3px solid transparent;display:flex;flex-direction:column;align-items:center;gap:3px}
-.tab .t{width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;margin-bottom:3px;}
-.tab .t img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block;}
+.tab .t{width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;margin-bottom:3px}
+.tab .t img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block}
 .tab.on{color:var(--navy);border-bottom-color:var(--gold)}
 
 .notice{margin:16px 16px 0;padding:12px 14px;border-left:4px solid var(--gold);background:linear-gradient(180deg,#fffbf4,#fff7ea);border-radius:0 12px 12px 0;box-shadow:0 2px 12px rgba(16,24,40,.06)}
 .notice p{font-size:15px;line-height:1.7;color:#5a4220;font-weight:700}
 
 .wrap{padding:18px 16px 20px}
-.flow-title{font-family:"Noto Serif KR",serif;font-size:16px;font-weight:900;color:var(--navy);border-bottom:2px solid var(--gold);padding-bottom:8px;margin-bottom:16px; display:flex;align-items:center;gap:8px;line-height:1;}
-.flow-icon{width:24px;height:24px;object-fit:contain;filter: drop-shadow(0 2px 4px rgba(0,0,0,0.25));}
-  
+.flow-title{
+  font-family:"Noto Serif KR",serif;font-size:16px;font-weight:900;color:var(--navy);
+  border-bottom:2px solid var(--gold);padding-bottom:8px;margin-bottom:16px;
+  display:flex;align-items:center;gap:8px;line-height:1;
+}
+.flow-icon{width:24px;height:24px;object-fit:contain;display:block}
+
 .card{background:var(--card);border:1px solid rgba(232,228,222,.9);border-radius:16px;overflow:hidden;box-shadow:0 10px 25px rgba(16,24,40,.08);margin-bottom:14px;opacity:0;transform:translateY(16px);transition:.35s}
 .card.in{opacity:1;transform:none}
 .head{display:flex;gap:12px;align-items:center;padding:14px 15px 11px;border-bottom:1px solid rgba(245,242,238,.9);background:linear-gradient(180deg,#fff,#fbfaf7)}
@@ -70,26 +74,24 @@ body{font-family:"Noto Sans KR",system-ui,sans-serif;background:var(--bg);color:
   text-align:center
 }
 
-/* Galaxy-like simple bezel (no notch/status, no extra images) */
+/* Galaxy-like simple bezel */
 .phone{
   position:relative;
   display:inline-block;
   padding:14px;
   border-radius:28px;
   background:linear-gradient(180deg,#0e1526,#060a12);
-  box-shadow:
-    0 18px 44px rgba(0,0,0,.38),
-    inset 0 0 0 1px rgba(255,255,255,.08);
-  --ct:0%;--cr:0%;--cb:0%;--cl:0%;
+  box-shadow:0 18px 44px rgba(0,0,0,.38), inset 0 0 0 1px rgba(255,255,255,.08);
 }
 
-/* screen + stacked images */
+/* screen + stacked images (highlight 기준은 무조건 screen) */
 .screen{
   position:relative;
   z-index:2;
   border-radius:20px;
   overflow:hidden;
   background:#000;
+  --ct:0%;--cr:0%;--cb:0%;--cl:0%;
 }
 .screen img{
   display:block;
@@ -105,19 +107,21 @@ body{font-family:"Noto Sans KR",system-ui,sans-serif;background:var(--bg);color:
   object-fit:cover;
   object-position:top;
 }
-.img-blur{filter: blur(2px) brightness(.78) saturate(.95); transform: scale(1.02) translateZ(0)}
+
+/* blur는 너무 강하지 않게 + scale 제거(링/선명영역 어긋남 방지) */
+.img-blur{filter: blur(2px) brightness(.82) saturate(.98); transform:translateZ(0)}
 .img-sharp{
   position:absolute; inset:0;
   filter:none;
   clip-path: inset(var(--ct) var(--cr) var(--cb) var(--cl) round var(--r));
 }
 
-/* ring (no blinking) */
+/* ring */
 .ring{
   position:absolute; z-index:6; pointer-events:none;
   border-radius:var(--r);
   border:2px solid rgba(255,214,90,.95);
-  box-shadow:0 12px 28px rgba(255,196,40,.35);
+  box-shadow:0 12px 28px rgba(255,196,40,.30);
 }
 
 /* callout */
@@ -144,6 +148,33 @@ body{font-family:"Noto Sans KR",system-ui,sans-serif;background:var(--bg);color:
 .help p{font-size:15px;color:var(--gold2);margin-bottom:14px;line-height:1.6}
 .help a{display:inline-flex;gap:8px;align-items:center;background:var(--gold);color:#fff;text-decoration:none;font-size:20px;font-weight:900;padding:12px 26px;border-radius:999px;box-shadow:0 10px 20px rgba(184,150,90,.25)}
 .footer{border-top:1px solid rgba(232,228,222,.8);text-align:center;padding:14px;font-size:12px;color:#98a2b3}
+
+/* ===== HL Editor (편하게 좌표 맞추기) ===== */
+.hl-editor{
+  position:fixed; right:14px; bottom:14px; z-index:9999;
+  display:flex; gap:8px; align-items:center;
+  background:rgba(17,24,39,.92);
+  color:#fff; padding:10px 10px; border-radius:14px;
+  border:1px solid rgba(255,255,255,.12);
+  backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+  box-shadow:0 18px 40px rgba(0,0,0,.35);
+  font-size:12px; font-weight:800;
+}
+.hl-editor button{
+  border:0; cursor:pointer; border-radius:12px;
+  padding:8px 10px; font-weight:900;
+  background:rgba(255,255,255,.10); color:#fff;
+}
+.hl-editor button:active{ transform:scale(.98); }
+.hl-editor .on{ background:#b8965a; }
+.hl-editor .meta{ opacity:.9; font-weight:700; }
+
+.hl-rect{
+  position:absolute; z-index:50; pointer-events:none;
+  border:2px dashed rgba(255,214,90,.95);
+  box-shadow:0 12px 28px rgba(255,196,40,.18);
+  border-radius:var(--r);
+}
 </style>
 </head>
 
@@ -156,10 +187,23 @@ body{font-family:"Noto Sans KR",system-ui,sans-serif;background:var(--bg);color:
   <div class="land-q">현재 어떤 환경에서 이용 중이신가요?</div>
 
   <div class="choice-grid">
-    <button type="button" class="choice-btn" data-go="app"><div class="choice-icon">
-  <img src="images/logo/mona_app.jpg" alt="모나 앱"></div><div><div class="choice-name">모바일 앱</div><div class="choice-desc">스마트폰에 앱 설치</div></div><div class="choice-arrow">›</div></button>
-    <button type="button" class="choice-btn" data-go="mweb"><div class="choice-icon">🌐</div><div><div class="choice-name">모바일 웹</div><div class="choice-desc">스마트폰 브라우저로 접속</div></div><div class="choice-arrow">›</div></button>
-    <button type="button" class="choice-btn" data-go="web"><div class="choice-icon">💻</div><div><div class="choice-name">홈페이지 (PC)</div><div class="choice-desc">컴퓨터로 yongpyong.co.kr</div></div><div class="choice-arrow">›</div></button>
+    <button type="button" class="choice-btn" data-go="app">
+      <div class="choice-icon"><img src="images/logo/mona_app.jpg" alt="모나 앱"></div>
+      <div><div class="choice-name">모바일 앱</div><div class="choice-desc">스마트폰에 앱 설치</div></div>
+      <div class="choice-arrow">›</div>
+    </button>
+
+    <button type="button" class="choice-btn" data-go="mweb">
+      <div class="choice-icon"><span style="color:#fff;font-weight:900">🌐</span></div>
+      <div><div class="choice-name">모바일 웹</div><div class="choice-desc">스마트폰 브라우저로 접속</div></div>
+      <div class="choice-arrow">›</div>
+    </button>
+
+    <button type="button" class="choice-btn" data-go="web">
+      <div class="choice-icon"><span style="color:#fff;font-weight:900">💻</span></div>
+      <div><div class="choice-name">홈페이지 (PC)</div><div class="choice-desc">컴퓨터로 yongpyong.co.kr</div></div>
+      <div class="choice-arrow">›</div>
+    </button>
   </div>
 </section>
 
@@ -197,7 +241,7 @@ body{font-family:"Noto Sans KR",system-ui,sans-serif;background:var(--bg);color:
 <script>
 const FLOWS={
   app:{
-    title: '<img class="flow-icon" src="images/logo/mona_app.jpg"> 모바일 앱 — 비밀번호 찾기',
+    title:'<img class="flow-icon" src="images/logo/mona_app.jpg"> 모바일 앱 — 비밀번호 찾기',
     steps:[
       { t:'모나용평 앱 실행 후<br>오른쪽 위 메뉴(☰) 누르기', img:'images/app/app_1.jpg', alt:'앱홈',
         hl:{ top:1, right:8, w:11, h:5.5, label:'☰ 누르세요!' } },
@@ -330,14 +374,14 @@ function stepCard(n,st){
         <div class="screen">
           <img class="img-blur ${st.full?"full":""}" src="${st.img}" alt="${esc(st.alt)}">
           <img class="img-sharp ${st.full?"full":""}" src="${st.img}" alt="">
+          <span data-hl
+            data-top="${st.hl.top}"
+            ${st.hl.left!=null?`data-left="${st.hl.left}"`:""}
+            ${st.hl.right!=null?`data-right="${st.hl.right}"`:""}
+            data-w="${st.hl.w}" data-h="${st.hl.h}"
+            data-label="${esc(st.hl.label||"")}"
+            ${st.hl.pos?`data-pos="${st.hl.pos}"`:""}></span>
         </div>
-        <span data-hl
-          data-top="${st.hl.top}"
-          ${st.hl.left!=null?`data-left="${st.hl.left}"`:""}
-          ${st.hl.right!=null?`data-right="${st.hl.right}"`:""}
-          data-w="${st.hl.w}" data-h="${st.hl.h}"
-          data-label="${esc(st.hl.label||"")}"
-          ${st.hl.pos?`data-pos="${st.hl.pos}"`:""}></span>
       </div>
     </div>`;
   if(st.tip){
@@ -355,49 +399,50 @@ function animate(){
   $$(".card").forEach(c=>{c.classList.remove("in"); io.observe(c);});
 }
 
+/* ===== highlight build (기준: screen) ===== */
 function buildSpot(){
-  $$(".phone").forEach(p=>{
-    $$(".ring,.callout",p).forEach(x=>x.remove());
-    const hl=$("[data-hl]",p); if(!hl) return;
+  $$(".screen").forEach(s=>{
+    $$(".ring,.callout,.hl-rect",s).forEach(x=>x.remove());
+
+    const hl=$("[data-hl]",s);
+    if(!hl) return;
 
     const top=+hl.dataset.top, w=+hl.dataset.w, h=+hl.dataset.h;
     const left0 = hl.dataset.left!=null ? +hl.dataset.left : null;
     const right0= hl.dataset.right!=null ? +hl.dataset.right: null;
     const label=hl.dataset.label||"", pos=hl.dataset.pos||"below";
-
     const left = (right0!=null) ? (100 - right0 - w) : left0;
 
-    const ct = top;
-    const cl = left;
-    const cb = 100 - (top + h);
-    const cr = 100 - (left + w);
+    const ct=top, cl=left, cb=100-(top+h), cr=100-(left+w);
 
-    p.style.setProperty("--ct", ct + "%");
-    p.style.setProperty("--cr", cr + "%");
-    p.style.setProperty("--cb", cb + "%");
-    p.style.setProperty("--cl", cl + "%");
+    s.style.setProperty("--ct", ct+"%");
+    s.style.setProperty("--cr", cr+"%");
+    s.style.setProperty("--cb", cb+"%");
+    s.style.setProperty("--cl", cl+"%");
 
     const ring=document.createElement("div");
     ring.className="ring";
     ring.style.cssText=`top:${top}%;left:${left}%;width:${w}%;height:${h}%;`;
-    p.appendChild(ring);
+    s.appendChild(ring);
 
     const c=document.createElement("div");
     c.className="callout";
     const cTop=(pos==="above")?(top-18):(top+h+2);
-    let mid=left + w/2;
-    mid=Math.min(Math.max(mid,12),88);
+    let mid=left + w/2; mid=Math.min(Math.max(mid,12),88);
     c.style.cssText=`top:${cTop}%;left:${mid}%;transform:translateX(-50%);`;
     c.innerHTML=(pos==="above")
       ? `<div class="bub">${esc(label)}</div><div class="line" style="transform:scaleY(-1)"><div></div></div><div class="finger">👆</div>`
       : `<div class="finger">👆</div><div class="line"><div></div></div><div class="bub">${esc(label)}</div>`;
-    p.appendChild(c);
+    s.appendChild(c);
   });
 }
 
 async function waitImgs(root){
   const imgs=$$("img",root);
-  await Promise.all(imgs.map(i=>i.complete?0:new Promise(r=>{i.addEventListener("load",r,{once:true});i.addEventListener("error",r,{once:true});})));
+  await Promise.all(imgs.map(i=>i.complete?0:new Promise(r=>{
+    i.addEventListener("load",r,{once:true});
+    i.addEventListener("error",r,{once:true});
+  })));
 }
 
 async function render(k){
@@ -410,7 +455,6 @@ async function render(k){
     flowRoot.appendChild(stepCard(i+1,st));
     if(i<data.steps.length-1) flowRoot.appendChild(arrowEl());
   });
-
   if(data.complete) flowRoot.appendChild(completeEl(data.complete));
 
   window.scrollTo(0,0);
@@ -426,6 +470,182 @@ $$(".choice-btn").forEach(b=>b.addEventListener("click",()=>openManual(b.dataset
 $("#back").addEventListener("click",back);
 $$(".tab").forEach(b=>b.addEventListener("click",()=>render(b.dataset.tab)));
 addEventListener("resize",()=>manual.style.display==="block"&&buildSpot());
+
+/* ===== HL Editor (Shift+드래그로 영역 만들기, Alt+클릭으로 단계 선택, Copy로 값 복사) ===== */
+let HL_EDIT=false;
+let hlTarget=null; // { key, idx, st, screenEl }
+
+function ensureEditorUI(){
+  if(document.querySelector(".hl-editor")) return;
+  const ui=document.createElement("div");
+  ui.className="hl-editor";
+  ui.innerHTML=`
+    <button type="button" id="hlToggle">HL 편집</button>
+    <button type="button" id="hlCopy">Copy</button>
+    <span class="meta">Alt+클릭: 단계 선택 · Shift+드래그: 영역</span>
+  `;
+  document.body.appendChild(ui);
+
+  const t=$("#hlToggle"), c=$("#hlCopy");
+  t.addEventListener("click",()=>{ HL_EDIT=!HL_EDIT; t.classList.toggle("on",HL_EDIT); });
+  c.addEventListener("click",async ()=>{
+    if(!hlTarget) return alert("Alt+클릭으로 편집할 단계를 먼저 선택하세요.");
+    const hl=hlTarget.st.hl;
+    const obj={ top:+hl.top, ...(hl.left!=null?{left:+hl.left}:{right:+hl.right}), w:+hl.w, h:+hl.h };
+    const txt=JSON.stringify(obj);
+    try{
+      await navigator.clipboard.writeText(txt);
+      c.textContent="Copied!";
+      setTimeout(()=>c.textContent="Copy",900);
+    }catch(e){
+      console.log("COPY:",txt);
+      alert("클립보드 권한이 없어 콘솔에 출력했습니다.");
+    }
+  });
+}
+
+function getCurrentFlowKey(){
+  const on=document.querySelector(".tab.on");
+  return on?on.dataset.tab:"app";
+}
+
+function findStepIndexFromScreen(screenEl){
+  const cards=Array.from(document.querySelectorAll("#flowRoot .card"));
+  const card=screenEl.closest(".card");
+  return cards.indexOf(card);
+}
+
+function selectTargetFromEvent(e){
+  const screen=e.target.closest(".screen");
+  if(!screen) return null;
+  const key=getCurrentFlowKey();
+  const idx=findStepIndexFromScreen(screen);
+  if(idx<0) return null;
+  const st=FLOWS[key].steps[idx];
+  return { key, idx, st, screenEl: screen };
+}
+
+function percentRectFromDrag(screenEl,a,b){
+  const r=screenEl.getBoundingClientRect();
+  const x1=Math.max(0, Math.min(a.x,b.x)-r.left);
+  const y1=Math.max(0, Math.min(a.y,b.y)-r.top);
+  const x2=Math.min(r.width,  Math.max(a.x,b.x)-r.left);
+  const y2=Math.min(r.height, Math.max(a.y,b.y)-r.top);
+
+  const left=(x1/r.width)*100;
+  const top=(y1/r.height)*100;
+  const w=((x2-x1)/r.width)*100;
+  const h=((y2-y1)/r.height)*100;
+
+  const round=v=>Math.round(v*10)/10;
+  return { top:round(top), left:round(left), w:round(w), h:round(h) };
+}
+
+function applyHlToStep(st,rect){
+  st.hl.top=rect.top;
+  st.hl.left=rect.left;
+  delete st.hl.right;
+  st.hl.w=rect.w;
+  st.hl.h=rect.h;
+}
+
+function applyClipVarsToScreen(screenEl,hl){
+  const top=+hl.top, left=(hl.left!=null?+hl.left:(100-(+hl.right)-(+hl.w))), w=+hl.w, h=+hl.h;
+  screenEl.style.setProperty("--ct", top+"%");
+  screenEl.style.setProperty("--cl", left+"%");
+  screenEl.style.setProperty("--cb", (100-(top+h))+"%");
+  screenEl.style.setProperty("--cr", (100-(left+w))+"%");
+}
+
+function drawTempRect(screenEl,hl){
+  let box=screenEl.querySelector(".hl-rect");
+  if(!box){ box=document.createElement("div"); box.className="hl-rect"; screenEl.appendChild(box); }
+  const left=(hl.left!=null?hl.left:(100-hl.right-hl.w));
+  box.style.cssText=`top:${hl.top}%;left:${left}%;width:${hl.w}%;height:${hl.h}%;`;
+}
+
+function refreshOne(screenEl){
+  if(!hlTarget) return;
+  applyClipVarsToScreen(screenEl, hlTarget.st.hl);
+  drawTempRect(screenEl, hlTarget.st.hl);
+}
+
+function enableHLSelection(){
+  document.addEventListener("click",(e)=>{
+    if(!HL_EDIT || !e.altKey) return;
+    const t=selectTargetFromEvent(e);
+    if(!t) return;
+    hlTarget=t;
+    refreshOne(hlTarget.screenEl);
+    e.preventDefault(); e.stopPropagation();
+  },true);
+}
+
+function enableHLDrag(){
+  let dragging=false, start=null;
+
+  const move=(clientX,clientY)=>{
+    if(!dragging || !hlTarget) return;
+    const rect=percentRectFromDrag(hlTarget.screenEl, start, {x:clientX,y:clientY});
+    applyHlToStep(hlTarget.st, rect);
+    refreshOne(hlTarget.screenEl);
+  };
+
+  const end=()=>{
+    if(!dragging) return;
+    dragging=false; start=null;
+    buildSpot();
+  };
+
+  document.addEventListener("mousedown",(e)=>{
+    if(!HL_EDIT || !e.shiftKey) return;
+    const t=selectTargetFromEvent(e);
+    if(!t) return;
+    hlTarget=t;
+    dragging=true;
+    start={x:e.clientX,y:e.clientY};
+
+    const rect=percentRectFromDrag(hlTarget.screenEl, start, {x:start.x+1,y:start.y+1});
+    applyHlToStep(hlTarget.st, rect);
+    refreshOne(hlTarget.screenEl);
+
+    e.preventDefault(); e.stopPropagation();
+  },true);
+
+  document.addEventListener("mousemove",(e)=>move(e.clientX,e.clientY),true);
+  document.addEventListener("mouseup",end,true);
+
+  // 모바일: HL 편집 ON이면 그냥 드래그로 영역
+  document.addEventListener("touchstart",(e)=>{
+    if(!HL_EDIT) return;
+    const t=selectTargetFromEvent(e);
+    if(!t) return;
+    hlTarget=t;
+    dragging=true;
+    const touch=e.touches[0];
+    start={x:touch.clientX,y:touch.clientY};
+
+    e.preventDefault();
+  },{passive:false});
+
+  document.addEventListener("touchmove",(e)=>{
+    if(!dragging || !hlTarget) return;
+    const touch=e.touches[0];
+    move(touch.clientX,touch.clientY);
+    e.preventDefault();
+  },{passive:false});
+
+  document.addEventListener("touchend",(e)=>{
+    end();
+    e.preventDefault();
+  },{passive:false});
+}
+
+(function initHLEditor(){
+  ensureEditorUI();
+  enableHLSelection();
+  enableHLDrag();
+})();
 </script>
 </body>
 </html>
