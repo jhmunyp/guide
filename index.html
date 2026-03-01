@@ -139,21 +139,19 @@
       animation:spotPulse 1.55s ease-in-out infinite;
     }
     @keyframes spotPulse{
-      0%,100%{
-        transform:scale(1);
-        box-shadow:
-          0 0 0 9999px rgba(10,10,20,var(--spot-dim)),
-          0 0 0 2px var(--spot-border),
-          0 10px 28px 10px var(--spot-glow);
-      }
-      50%{
-        transform:scale(1.015);
-        box-shadow:
-          0 0 0 9999px rgba(10,10,20,var(--spot-dim)),
-          0 0 0 3px var(--spot-border),
-          0 16px 40px 14px rgba(255,208,70,.55);
-      }
-    }
+  0%,100%{
+    transform:scale(1);
+    box-shadow:
+      0 0 0 2px var(--spot-border),
+      0 10px 28px 10px var(--spot-glow);
+  }
+  50%{
+    transform:scale(1.015);
+    box-shadow:
+      0 0 0 3px var(--spot-border),
+      0 16px 40px 14px rgba(255,208,70,.55);
+  }
+}
     .spot-callout{
       position:absolute;z-index:20;pointer-events:none;
       display:flex;flex-direction:column;align-items:center;gap:6px;
