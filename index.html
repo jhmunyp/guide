@@ -1,738 +1,554 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3" />
   <title>비밀번호 찾기 안내 | 모나용평</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@600;700&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --navy: #1a1f2e;
-      --gold: #b8965a;
-      --gold-light: #d4af7a;
-      --border: #e8e4de;
-    }
-    * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-    body { background:#fff; font-family:'Noto Sans KR',sans-serif; color:#1e1e1e; }
 
-    /* ===== LANDING ===== */
-    #landing {
-      min-height:100vh;
-      background:var(--navy);
-      display:flex; flex-direction:column;
-      align-items:center; justify-content:center;
+  <style>
+    :root{
+      --navy:#1a1f2e; --gold:#b8965a; --gold2:#d4af7a; --line:#e8e4de;
+      /* Spotlight (iPhone tutorial 느낌) */
+      --spot-dim:.34; --spot-radius:18px;
+      --spot-border:rgba(255,214,90,.95);
+      --spot-glow:rgba(255,196,40,.45);
+    }
+    *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+    body{font-family:"Noto Sans KR",system-ui,sans-serif;background:#fff;color:#1e1e1e}
+
+    /* ===== Landing ===== */
+    #landing{
+      min-height:100vh;background:var(--navy);
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
       padding:50px 24px 60px;
     }
-    .land-logo { height:36px; filter:brightness(0) invert(1); margin-bottom:36px; }
-    .land-line { width:48px; height:2px; background:var(--gold); margin:0 auto 28px; }
-    .land-title {
-      font-family:'Noto Serif KR',serif;
-      font-size:28px; color:#fff; font-weight:700;
-      text-align:center; line-height:1.5; margin-bottom:10px;
-    }
-    .land-sub { font-size:15px; color:var(--gold-light); margin-bottom:44px; text-align:center; line-height:1.6; }
-    .land-q { font-size:13px; color:#7788aa; letter-spacing:0.1em; margin-bottom:18px; text-align:center; }
+    .land-logo{height:36px;filter:brightness(0) invert(1);margin-bottom:36px}
+    .land-line{width:48px;height:2px;background:var(--gold);margin:0 auto 28px}
+    .land-title{font-family:"Noto Serif KR",serif;font-size:28px;font-weight:700;color:#fff;text-align:center;line-height:1.5;margin-bottom:10px}
+    .land-sub{font-size:15px;color:var(--gold2);text-align:center;line-height:1.6;margin-bottom:44px}
+    .land-q{font-size:13px;color:#7788aa;letter-spacing:.1em;margin-bottom:18px;text-align:center}
 
-    .choice-grid { display:flex; flex-direction:column; gap:13px; width:100%; max-width:380px; }
-    .choice-btn {
-      background:#ffffff0d; border:1.5px solid #ffffff18;
-      border-radius:16px; padding:18px 20px;
-      display:flex; align-items:center; gap:15px;
-      cursor:pointer; transition:all 0.2s;
-      text-align:left; width:100%;
+    .choice-grid{width:100%;max-width:380px;display:flex;flex-direction:column;gap:13px}
+    .choice-btn{
+      width:100%;display:flex;gap:15px;align-items:center;
+      background:#ffffff0d;border:1.5px solid #ffffff18;border-radius:16px;
+      padding:18px 20px;cursor:pointer;transition:.2s;text-align:left;
     }
-    .choice-btn:active { background:var(--gold); border-color:var(--gold); transform:scale(0.98); }
-    .choice-icon { width:52px; height:52px; background:#ffffff12; border-radius:13px; display:flex; align-items:center; justify-content:center; font-size:26px; flex-shrink:0; }
-    .choice-name { font-size:19px; font-weight:700; color:#fff; margin-bottom:3px; }
-    .choice-desc { font-size:13px; color:#aabbd0; line-height:1.5; }
-    .choice-arrow { margin-left:auto; color:#445577; font-size:20px; flex-shrink:0; }
+    .choice-btn:active{background:var(--gold);border-color:var(--gold);transform:scale(.98)}
+    .choice-icon{width:52px;height:52px;border-radius:13px;background:#ffffff12;display:flex;align-items:center;justify-content:center;font-size:26px;flex:0 0 auto}
+    .choice-name{color:#fff;font-weight:800;font-size:19px;margin-bottom:3px}
+    .choice-desc{color:#aabbd0;font-size:13px;line-height:1.5}
+    .choice-arrow{margin-left:auto;color:#445577;font-size:20px}
 
-    /* ===== MANUAL ===== */
-    #manual { display:none; background:#fff; min-height:100vh; }
+    /* ===== Manual ===== */
+    #manual{display:none;min-height:100vh;background:#fff}
+    .top-header{position:sticky;top:0;z-index:100;background:#fff;border-bottom:1px solid var(--line);box-shadow:0 2px 8px rgba(0,0,0,.06)}
+    .top-row{display:flex;align-items:center;gap:10px;padding:14px 16px 10px}
+    .back-btn{
+      width:36px;height:36px;border-radius:999px;border:1.5px solid var(--line);background:none;
+      color:var(--navy);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex:0 0 auto;
+    }
+    .header{flex:1;display:flex;align-items:center;gap:8px}
+    .header img{height:22px}
+    .header span{font-weight:800;font-size:15px;color:var(--navy)}
 
-    /* TOP HEADER */
-    .top-header {
-      background:#fff;
-      border-bottom:1px solid var(--border);
-      position:sticky; top:0; z-index:100;
-      box-shadow:0 2px 8px rgba(0,0,0,0.06);
+    .tab-bar{display:flex;border-top:1px solid #f0ece6}
+    .tab-btn{
+      flex:1;border:none;background:none;cursor:pointer;
+      padding:11px 4px;font-weight:900;font-size:13px;color:#999;
+      border-bottom:3px solid transparent;transition:.18s;
+      display:flex;flex-direction:column;align-items:center;gap:3px;
+      font-family:"Noto Sans KR",sans-serif;
     }
-    .top-header-row1 {
-      display:flex; align-items:center; gap:10px;
-      padding:14px 16px 10px;
-    }
-    .back-btn {
-      background:none; border:1.5px solid var(--border);
-      color:var(--navy); font-size:16px;
-      width:36px; height:36px; border-radius:50%;
-      cursor:pointer; display:flex; align-items:center; justify-content:center;
-      flex-shrink:0;
-    }
-    .header-logo-wrap { flex:1; display:flex; align-items:center; gap:8px; }
-    .header-logo { height:22px; }
-    .header-page-title { font-size:15px; font-weight:700; color:var(--navy); }
+    .tab-btn .t{font-size:18px}
+    .tab-btn.active{color:var(--navy);border-bottom-color:var(--gold)}
 
-    /* TAB BAR */
-    .tab-bar {
-      display:flex;
-      border-top:1px solid #f0ece6;
+    .notice{
+      margin:16px 16px 0;padding:12px 14px;border-left:4px solid var(--gold);
+      background:#fffbf4;border-radius:0 8px 8px 0;
     }
-    .tab-btn {
-      flex:1; padding:11px 4px;
-      background:none; border:none;
-      font-family:'Noto Sans KR',sans-serif;
-      font-size:13px; font-weight:700;
-      color:#999; cursor:pointer;
-      border-bottom:3px solid transparent;
-      transition:all 0.18s;
-      display:flex; flex-direction:column; align-items:center; gap:3px;
-    }
-    .tab-btn .t-icon { font-size:18px; }
-    .tab-btn.active { color:var(--navy); border-bottom-color:var(--gold); }
+    .notice p{font-size:15px;line-height:1.7;color:#5a4220;font-weight:600}
 
-    /* NOTICE */
-    .notice {
-      background:#fffbf4; border-left:4px solid var(--gold);
-      margin:16px 16px 0; padding:12px 14px; border-radius:0 8px 8px 0;
-    }
-    .notice p { font-size:15px; line-height:1.7; color:#5a4220; font-weight:500; }
-
-    /* STEPS */
-    .steps-wrap { padding:18px 16px 20px; }
-    .flow-title {
-      font-family:'Noto Serif KR',serif;
-      font-size:16px; font-weight:700; color:var(--navy);
+    .wrap{padding:18px 16px 20px}
+    .flow-title{
+      font-family:"Noto Serif KR",serif;
+      font-size:16px;font-weight:800;color:var(--navy);
       border-bottom:2px solid var(--gold);
-      padding-bottom:8px; margin-bottom:16px;
+      padding-bottom:8px;margin-bottom:16px;
     }
 
-    .step-card {
-      background:#fff; border-radius:14px;
-      border:1px solid var(--border);
-      margin-bottom:14px; overflow:hidden;
-      box-shadow:0 2px 10px rgba(0,0,0,0.05);
-      opacity:0; transform:translateY(16px);
-      transition:opacity 0.45s ease, transform 0.45s ease;
+    .card{
+      background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;
+      box-shadow:0 2px 10px rgba(0,0,0,.05);margin-bottom:14px;
+      opacity:0;transform:translateY(16px);transition:opacity .45s ease,transform .45s ease;
     }
-    .step-card.visible { opacity:1; transform:translateY(0); }
+    .card.visible{opacity:1;transform:translateY(0)}
+    .head{display:flex;gap:12px;align-items:center;padding:14px 15px 11px;border-bottom:1px solid #f5f2ee}
+    .num{width:38px;height:38px;border-radius:999px;background:var(--navy);color:#fff;font-weight:900;display:flex;align-items:center;justify-content:center}
+    .title{font-size:17px;font-weight:900;color:var(--navy);line-height:1.35}
+    .sub{margin-top:2px;font-size:13px;color:#777;line-height:1.5}
 
-    .step-head {
-      display:flex; align-items:center; gap:12px;
-      padding:14px 15px 11px;
-      border-bottom:1px solid #f5f2ee;
+    /* ===== Screenshot 영역: 이미지 밖은 흰색, spotlight는 이미지 크기만 ===== */
+    .shot-area{background:#fff;padding:8px 0;text-align:center;overflow:hidden;position:relative}
+    .shot-box{display:inline-block;position:relative} /* ✅ overlay 기준이 이미지 크기로 줄어듦 */
+    .shot-mobile{display:block;max-height:440px;max-width:100%;width:auto;margin:0 auto}
+    .shot-full{display:block;width:100%;max-height:400px;object-fit:cover;object-position:top}
+
+    .arrow{margin:-2px 0 2px;text-align:center;font-size:22px;color:var(--gold)}
+
+    .tip{padding:12px 14px;background:#f2f8ff;border-top:1px solid #ddeeff}
+    .tip .lbl{font-size:11px;font-weight:900;color:#1a6fb8;margin-bottom:2px}
+    .tip p{font-size:14px;line-height:1.75;color:#1a4a7a}
+    .tip strong{color:#c05000}
+
+    .complete{
+      background:linear-gradient(135deg,#1a1f2e,#2d3a5e);
+      border-radius:14px;padding:24px;text-align:center;margin:10px 0 16px;
+      color:#fff;
     }
-    .step-num {
-      width:38px; height:38px; background:var(--navy); color:#fff;
-      border-radius:50%; display:flex; align-items:center; justify-content:center;
-      font-size:17px; font-weight:900; flex-shrink:0;
+    .complete .emo{font-size:34px;margin-bottom:8px}
+    .complete .t{font-family:"Noto Serif KR",serif;font-size:20px;font-weight:800;margin-bottom:6px}
+    .complete .d{font-size:15px;color:var(--gold2);line-height:1.7}
+
+    .help{
+      background:var(--navy);margin:4px 16px 26px;border-radius:14px;padding:22px 18px;text-align:center
     }
-    .step-title { font-size:17px; font-weight:700; color:var(--navy); line-height:1.35; }
-    .step-sub { font-size:13px; color:#777; margin-top:2px; line-height:1.5; }
-
-    /* SCREENSHOT */
-    .shot-area { position:relative; overflow:hidden; }
-    .shot-wrap { display:flex; justify-content:center; position:relative; }
-    .sw-auto { position:relative; }
-    .shot-full { width:100%; display:block; max-height:400px; object-fit:cover; object-position:top; }
-    .shot-mobile { display:block; max-height:440px; width:auto; max-width:100%; margin:0 auto; }
-    .bg-dark { background:#111; padding:8px 0; }
-    .bg-light { background:#f5f5f5; padding:8px 0; }
-
-    /* SPOTLIGHT */
-    .spot-overlay { position:absolute; inset:0; pointer-events:none; z-index:8; background:rgba(8,8,20,0.68); }
-    .spot-hole {
-      position:absolute; pointer-events:none; z-index:9;
-      animation:borderPulse 1.5s ease-in-out infinite;
+    .help h3{font-family:"Noto Serif KR",serif;font-size:19px;color:#fff;margin-bottom:5px}
+    .help p{font-size:15px;color:var(--gold2);margin-bottom:14px;line-height:1.6}
+    .help a{
+      display:inline-flex;gap:8px;align-items:center;
+      background:var(--gold);color:#fff;text-decoration:none;
+      font-size:20px;font-weight:900;padding:12px 26px;border-radius:999px;
     }
-    @keyframes borderPulse {
-      0%,100% { box-shadow:0 0 0 9999px rgba(8,8,20,0.68), 0 0 0 2.5px rgba(255,255,255,0.9), 0 0 14px 3px rgba(255,255,255,0.4); }
-      50%      { box-shadow:0 0 0 9999px rgba(8,8,20,0.68), 0 0 0 4px rgba(255,210,60,1),   0 0 26px 8px rgba(255,195,40,0.5); }
+    .footer{border-top:1px solid var(--line);text-align:center;padding:14px;font-size:12px;color:#bbb}
+
+    /* ===== Spotlight (iPhone tutorial style) ===== */
+    .spot-overlay{
+      position:absolute;inset:0;z-index:8;pointer-events:none;
+      background:rgba(10,10,20,var(--spot-dim));
+      backdrop-filter:blur(1.2px);
+      -webkit-backdrop-filter:blur(1.2px);
     }
-    .spot-callout { position:absolute; z-index:20; pointer-events:none; display:flex; flex-direction:column; align-items:center; gap:4px; }
-    .spot-bubble { background:#fff; color:var(--navy); font-size:14px; font-weight:700; padding:8px 15px; border-radius:50px; white-space:nowrap; box-shadow:0 3px 14px rgba(0,0,0,0.3); }
-    .spot-finger { font-size:26px; filter:drop-shadow(0 2px 3px rgba(0,0,0,0.35)); animation:fingerBounce 1.3s ease-in-out infinite; }
-    .spot-arrow-line { width:2px; height:22px; background:rgba(255,255,255,0.75); border-radius:2px; position:relative; }
-    .spot-arrow-line::after { content:''; position:absolute; bottom:-5px; left:50%; transform:translateX(-50%); border-left:4px solid transparent; border-right:4px solid transparent; border-top:6px solid rgba(255,255,255,0.75); }
-    @keyframes fingerBounce { 0%,100%{transform:translateY(0) rotate(-8deg)} 50%{transform:translateY(5px) rotate(-8deg)} }
-
-    .step-tip { padding:12px 14px; background:#f2f8ff; border-top:1px solid #ddeeff; }
-    .step-tip p { font-size:14px; line-height:1.75; color:#1a4a7a; }
-    .step-tip strong { color:#c05000; }
-    .tip-lbl { font-size:11px; font-weight:700; color:#1a6fb8; margin-bottom:2px; }
-    .step-arrow { text-align:center; font-size:22px; color:var(--gold); margin:-2px 0 2px; }
-
-    .complete-box { background:linear-gradient(135deg,#1a1f2e,#2d3a5e); border-radius:14px; padding:24px; text-align:center; margin-bottom:16px; }
-    .help-banner { background:var(--navy); margin:4px 16px 26px; border-radius:14px; padding:22px 18px; text-align:center; }
-    .help-banner h3 { font-family:'Noto Serif KR',serif; font-size:19px; color:#fff; margin-bottom:5px; }
-    .help-banner p { font-size:15px; color:var(--gold-light); margin-bottom:14px; line-height:1.6; }
-    .help-tel { display:inline-flex; align-items:center; gap:8px; background:var(--gold); color:#fff; font-size:20px; font-weight:700; padding:12px 26px; border-radius:50px; text-decoration:none; }
-    .footer { text-align:center; padding:14px; font-size:12px; color:#bbb; border-top:1px solid var(--border); }
+    .spot-hole{
+      position:absolute;z-index:9;pointer-events:none;
+      border-radius:var(--spot-radius);
+      will-change:transform,box-shadow;
+      animation:spotPulse 1.55s ease-in-out infinite;
+    }
+    @keyframes spotPulse{
+      0%,100%{
+        transform:scale(1);
+        box-shadow:
+          0 0 0 9999px rgba(10,10,20,var(--spot-dim)),
+          0 0 0 2px var(--spot-border),
+          0 10px 28px 10px var(--spot-glow);
+      }
+      50%{
+        transform:scale(1.015);
+        box-shadow:
+          0 0 0 9999px rgba(10,10,20,var(--spot-dim)),
+          0 0 0 3px var(--spot-border),
+          0 16px 40px 14px rgba(255,208,70,.55);
+      }
+    }
+    .spot-callout{
+      position:absolute;z-index:20;pointer-events:none;
+      display:flex;flex-direction:column;align-items:center;gap:6px;
+      filter:drop-shadow(0 10px 18px rgba(0,0,0,.25));
+    }
+    .spot-bubble{
+      background:rgba(255,255,255,.92);
+      color:var(--navy);font-size:14px;font-weight:900;
+      padding:9px 14px;border-radius:999px;white-space:nowrap;
+      border:1px solid rgba(255,255,255,.55);
+      backdrop-filter:blur(8px);
+      -webkit-backdrop-filter:blur(8px);
+    }
+    .spot-finger{font-size:26px;transform-origin:50% 100%;animation:fingerFloat 1.4s ease-in-out infinite}
+    @keyframes fingerFloat{0%,100%{transform:translateY(0) rotate(-10deg)}50%{transform:translateY(6px) rotate(-10deg)}}
+    .spot-line{width:2px;height:22px;background:rgba(255,255,255,.75);border-radius:2px;position:relative}
+    .spot-line:after{
+      content:"";position:absolute;bottom:-5px;left:50%;transform:translateX(-50%);
+      border-left:5px solid transparent;border-right:5px solid transparent;border-top:7px solid rgba(255,255,255,.75)
+    }
   </style>
 </head>
+
 <body>
+  <!-- ===== Landing ===== -->
+  <section id="landing">
+    <img class="land-logo" src="img_logo.jpg" alt="모나용평" onerror="this.style.display='none'">
+    <div class="land-line"></div>
+    <div class="land-title">비밀번호를<br>잊으셨나요?</div>
+    <div class="land-sub">단계별 안내를 따라하시면<br>쉽게 찾으실 수 있습니다</div>
+    <div class="land-q">현재 어떤 환경에서 이용 중이신가요?</div>
 
-<!-- ==================== LANDING ==================== -->
-<div id="landing">
-  <img class="land-logo" src="img_logo.jpg" alt="모나용평" onerror="this.style.display='none'">
-  <div class="land-line"></div>
-  <div class="land-title">비밀번호를<br>잊으셨나요?</div>
-  <div class="land-sub">단계별 안내를 따라하시면<br>쉽게 찾으실 수 있습니다</div>
-  <div class="land-q">현재 어떤 환경에서 이용 중이신가요?</div>
-  <div class="choice-grid">
-    <button class="choice-btn" onclick="showManual('app')">
-      <div class="choice-icon">📱</div>
-      <div class="choice-text">
-        <div class="choice-name">모바일 앱</div>
-        <div class="choice-desc">스마트폰에 모나용평 앱을 설치하여 이용하시는 분</div>
-      </div>
-      <div class="choice-arrow">›</div>
-    </button>
-    <button class="choice-btn" onclick="showManual('mweb')">
-      <div class="choice-icon">🌐</div>
-      <div class="choice-text">
-        <div class="choice-name">모바일 웹</div>
-        <div class="choice-desc">스마트폰 인터넷으로 홈페이지 접속하시는 분</div>
-      </div>
-      <div class="choice-arrow">›</div>
-    </button>
-    <button class="choice-btn" onclick="showManual('web')">
-      <div class="choice-icon">💻</div>
-      <div class="choice-text">
-        <div class="choice-name">홈페이지 (PC)</div>
-        <div class="choice-desc">컴퓨터로 yongpyong.co.kr 접속하시는 분</div>
-      </div>
-      <div class="choice-arrow">›</div>
-    </button>
-  </div>
-</div>
-
-<!-- ==================== MANUAL ==================== -->
-<div id="manual">
-
-  <!-- 상단 고정 헤더 + 탭 -->
-  <div class="top-header">
-    <div class="top-header-row1">
-      <button class="back-btn" onclick="goBack()">←</button>
-      <div class="header-logo-wrap">
-        <img class="header-logo" src="img_logo.jpg" alt="모나용평" onerror="this.style.display='none'">
-        <span class="header-page-title">비밀번호 찾기 안내</span>
-      </div>
-    </div>
-    <div class="tab-bar">
-      <button class="tab-btn active" id="tab-app" onclick="switchTab('app')">
-        <span class="t-icon">📱</span>모바일 앱
+    <div class="choice-grid">
+      <button class="choice-btn" data-go="app">
+        <div class="choice-icon">📱</div>
+        <div>
+          <div class="choice-name">모바일 앱</div>
+          <div class="choice-desc">스마트폰에 모나용평 앱을 설치하여 이용</div>
+        </div>
+        <div class="choice-arrow">›</div>
       </button>
-      <button class="tab-btn" id="tab-mweb" onclick="switchTab('mweb')">
-        <span class="t-icon">🌐</span>모바일 웹
+
+      <button class="choice-btn" data-go="mweb">
+        <div class="choice-icon">🌐</div>
+        <div>
+          <div class="choice-name">모바일 웹</div>
+          <div class="choice-desc">스마트폰 브라우저로 홈페이지 접속</div>
+        </div>
+        <div class="choice-arrow">›</div>
       </button>
-      <button class="tab-btn" id="tab-web" onclick="switchTab('web')">
-        <span class="t-icon">💻</span>홈페이지(PC)
+
+      <button class="choice-btn" data-go="web">
+        <div class="choice-icon">💻</div>
+        <div>
+          <div class="choice-name">홈페이지 (PC)</div>
+          <div class="choice-desc">컴퓨터로 yongpyong.co.kr 접속</div>
+        </div>
+        <div class="choice-arrow">›</div>
       </button>
     </div>
-  </div>
+  </section>
 
-  <div class="notice">
-    <p>📋 <strong>노란 테두리</strong>로 표시된 부분을 순서대로 눌러 주세요.</p>
-  </div>
-
-  <!-- ========== APP ========== -->
-  <div id="sec-app" class="steps-wrap">
-    <div class="flow-title">📱 모바일 앱 — 비밀번호 찾기</div>
-
-    <div class="step-card">
-      <div class="step-head"><div class="step-num">1</div><div class="step-info">
-        <div class="step-title">모나용평 앱 실행 후<br>오른쪽 위 메뉴(☰) 누르기</div>
-      </div></div>
-      <div class="shot-area bg-light"><div class="shot-wrap">
-        <img class="shot-mobile" src="images/app/app_1.jpg" alt="앱홈">
-        <span data-hl data-top="1" data-right="8" data-width="11" data-height="5.5" data-label="☰ 누르세요!"></span>
-      </div></div>
-    </div><div class="step-arrow">↓</div>
-
-    <div class="step-card">
-      <div class="step-head"><div class="step-num">2</div><div class="step-info">
-        <div class="step-title">메뉴에서 "로그인 →" 누르기</div>
-      </div></div>
-      <div class="shot-area bg-light"><div class="shot-wrap">
-        <img class="shot-mobile" src="images/app/app_2.jpg" alt="메뉴">
-        <span data-hl data-top="11" data-left="16" data-width="32" data-height="7.5" data-label="로그인 누르세요!"></span>
-      </div></div>
-    </div><div class="step-arrow">↓</div>
-
-    <div class="step-card">
-      <div class="step-head"><div class="step-num">3</div><div class="step-info">
-        <div class="step-title">로그인 화면에서<br>"비밀번호 찾기" 누르기</div>
-      </div></div>
-      <div class="shot-area bg-light"><div class="shot-wrap">
-        <img class="shot-mobile" src="images/app/app_3.jpg" alt="로그인">
-        <span data-hl data-top="66.5" data-left="30" data-width="38" data-height="5.5" data-label="비밀번호 찾기 클릭!"></span>
-      </div></div>
-    </div><div class="step-arrow">↓</div>
-
-    <div class="step-card">
-      <div class="step-head"><div class="step-num">4</div><div class="step-info">
-        <div class="step-title">아이디 입력 후 "휴대폰 인증" 누르기</div>
-        <div class="step-sub">아이디 입력 → 검은 동그라미 버튼</div>
-      </div></div>
-      <div class="shot-area bg-light"><div class="shot-wrap">
-        <img class="shot-mobile" src="images/app/app_4.jpg" alt="비밀번호찾기">
-        <span data-hl data-top="54" data-left="28" data-width="42" data-height="11" data-label="휴대폰 인증 클릭!"></span>
-      </div></div>
-    </div><div class="step-arrow">↓</div>
-
-    <div class="step-card">
-      <div class="step-head"><div class="step-num">5</div><div class="step-info">
-        <div class="step-title">본인 통신사 선택</div>
-        <div class="step-sub">SKT · KT · LG U+ 중 해당 항목</div>
-      </div></div>
-      <div class="shot-area bg-light"><div class="shot-wrap">
-        <img class="shot-mobile" src="images/app/app_5.jpg" alt="통신사">
-        <span data-hl data-top="32" data-left="3" data-width="28" data-height="16" data-label="내 통신사 선택!"></span>
-      </div></div>
-      <div class="step-tip"><div class="tip-lbl">💡 알뜰폰 이용자</div><p>아래 행 <strong>SKT/KT/LG U+ 알뜰폰</strong> 선택</p></div>
-    </div><div class="step-arrow">↓</div>
-
-    <div class="step-card">
-      <div class="step-head"><div class="step-num">6</div><div class="step-info">
-        <div class="step-title">"문자(SMS) 인증" 선택</div>
-      </div></div>
-      <div class="shot-area bg-light"><div class="shot-wrap">
-        <img class="shot-mobile" src="images/app/app_6.jpg" alt="인증방법">
-        <span data-hl data-top="51" data-left="5" data-width="89" data-height="14" data-label="문자(SMS) 인증 클릭!"></span>
-      </div></div>
-    </div><div class="step-arrow">↓</div>
-
-    <div class="step-card">
-      <div class="step-head"><div class="step-num">7</div><div class="step-info">
-        <div class="step-title">동의 체크 후 빨간 "다음" 클릭</div>
-      </div></div>
-      <div class="shot-area bg-light"><div class="shot-wrap">
-        <img class="shot-mobile" src="images/app/app_7.jpg" alt="다음">
-        <span data-hl data-top="76" data-left="5" data-width="89" data-height="9" data-label="다음 버튼 클릭!"></span>
-      </div></div>
-    </div><div class="step-arrow">↓</div>
-
-    <div class="step-card">
-      <div class="step-head"><div class="step-num">8</div><div class="step-info">
-        <div class="step-title">이름·생년월일·휴대폰·보안문자 입력<br>후 빨간 "확인" 클릭</div>
-      </div></div>
-      <div class="shot-area bg-light"><div class="shot-wrap">
-        <img class="shot-mobile" src="images/app/app_8.jpg" alt="정보입력">
-        <span data-hl data-top="82" data-left="5" data-width="89" data-height="7" data-label="확인 버튼 클릭!"></span>
-      </div></div>
-      <div class="step-tip"><div class="tip-lbl">✏️ 입력 순서</div><p>① 이름 → ② 생년월일 6자리 → ③ 주민번호 앞 1자리 → ④ 휴대폰번호 → ⑤ 보안문자 → ⑥ 확인</p></div>
-    </div><div class="step-arrow">↓</div>
-
-    <div class="step-card">
-      <div class="step-head"><div class="step-num">9</div><div class="step-info">
-        <div class="step-title">화면 상단 알림 확인</div>
-        <div class="step-sub">문자함에서 NICE아이디 인증번호 확인</div>
-      </div></div>
-      <div class="shot-area bg-dark"><div class="shot-wrap">
-        <img class="shot-mobile" src="images/app/app_9.jpg" alt="인증대기">
-        <span data-hl data-top="1.5" data-left="3" data-width="93" data-height="6" data-label="상단 알림에 번호 표시!"></span>
-      </div></div>
-    </div><div class="step-arrow">↓</div>
-
-    <div class="step-card">
-      <div class="step-head"><div class="step-num">10</div><div class="step-info">
-        <div class="step-title">문자로 온 인증번호 6자리 확인</div>
-      </div></div>
-      <div class="shot-area bg-dark"><div class="shot-wrap">
-        <img class="shot-mobile" src="images/app/app_10.jpg" alt="SMS">
-        <span data-hl data-top="27" data-left="3" data-width="65" data-height="11" data-label="이 숫자 6자리 기억!"></span>
-      </div></div>
-      <div class="step-tip"><div class="tip-lbl">⏰ 중요</div><p>인증번호는 <strong>3분 안에</strong> 입력해야 합니다!</p></div>
-    </div><div class="step-arrow">↓</div>
-
-    <div class="step-card">
-      <div class="step-head"><div class="step-num">11</div><div class="step-info">
-        <div class="step-title">인증번호 입력 후 "확인" 클릭</div>
-      </div></div>
-      <div class="shot-area bg-dark"><div class="shot-wrap">
-        <img class="shot-mobile" src="images/app/app_11.jpg" alt="인증번호입력">
-        <span data-hl data-top="24" data-left="54" data-width="38" data-height="10" data-label="확인 클릭!"></span>
-      </div></div>
-    </div><div class="step-arrow">↓</div>
-
-    <div class="step-card">
-      <div class="step-head"><div class="step-num">12</div><div class="step-info">
-        <div class="step-title">새 비밀번호 입력 후 "비밀번호변경" 클릭</div>
-      </div></div>
-      <div class="shot-area bg-light"><div class="shot-wrap">
-        <img class="shot-mobile" src="images/app/app_12.jpg" alt="비밀번호변경">
-        <span data-hl data-top="65" data-left="9" data-width="47" data-height="11" data-label="비밀번호변경 클릭!"></span>
-      </div></div>
-      <div class="step-tip"><div class="tip-lbl">🔒 비밀번호 규칙</div><p>영문 + 숫자 + 특수문자, <strong>8~13자리</strong> · 예: Yong2024!</p></div>
-    </div>
-    <div class="complete-box">
-      <div style="font-size:34px;margin-bottom:8px">🎉</div>
-      <div style="font-family:'Noto Serif KR',serif;font-size:20px;color:#fff;font-weight:700;margin-bottom:6px">비밀번호 변경 완료!</div>
-      <div style="font-size:15px;color:var(--gold-light);line-height:1.7">새 비밀번호로 로그인하실 수 있습니다 😊</div>
-    </div>
-  </div>
-
-  <!-- ========== MOBILE WEB ========== -->
-  <div id="sec-mweb" class="steps-wrap" style="display:none">
-    <div class="flow-title">🌐 모바일 웹 — 비밀번호 찾기</div>
-
-    <div class="step-card">
-      <div class="step-head"><div class="step-num">1</div><div class="step-info">
-        <div class="step-title">스마트폰 브라우저에서<br>yongpyong.co.kr 접속 후 메뉴(☰)</div>
-      </div></div>
-      <div class="shot-area bg-dark"><div class="shot-wrap">
-        <img class="shot-mobile" src="mweb_5.jpg" alt="모바일웹홈">
-        <span data-hl data-top="1.5" data-left="1.5" data-width="8" data-height="4.5" data-label="☰ 클릭!"></span>
-      </div></div>
-    </div><div class="step-arrow">↓</div>
-
-    <div class="step-card">
-      <div class="step-head"><div class="step-num">2</div><div class="step-info">
-        <div class="step-title">메뉴에서 "로그인" 클릭</div>
-      </div></div>
-      <div class="shot-area bg-dark"><div class="shot-wrap">
-        <img class="shot-mobile" src="mweb_6.jpg" alt="메뉴">
-        <span data-hl data-top="10" data-left="56" data-width="27" data-height="5.5" data-label="로그인 클릭!"></span>
-      </div></div>
-    </div><div class="step-arrow">↓</div>
-
-    <div class="step-card">
-      <div class="step-head"><div class="step-num">3</div><div class="step-info">
-        <div class="step-title">로그인 화면에서 "비밀번호찾기" 클릭</div>
-      </div></div>
-      <div class="shot-area bg-dark"><div class="shot-wrap">
-        <img class="shot-mobile" src="mweb_7.jpg" alt="로그인">
-        <span data-hl data-top="56.5" data-left="20" data-width="37" data-height="7" data-label="비밀번호찾기 클릭!"></span>
-      </div></div>
-    </div><div class="step-arrow">↓</div>
-
-    <div class="step-card">
-      <div class="step-head"><div class="step-num">4</div><div class="step-info">
-        <div class="step-title">아이디 입력 후 "휴대폰인증" 클릭</div>
-      </div></div>
-      <div class="shot-area bg-dark"><div class="shot-wrap">
-        <img class="shot-mobile" src="mweb_8.jpg" alt="비밀번호찾기">
-        <span data-hl data-top="42" data-left="2" data-width="46" data-height="18" data-label="휴대폰인증 클릭!"></span>
-      </div></div>
-    </div><div class="step-arrow">↓</div>
-
-    <div class="step-card">
-      <div class="step-head"><div class="step-num">5</div><div class="step-info">
-        <div class="step-title">본인 통신사 선택</div>
-      </div></div>
-      <div class="shot-area bg-dark"><div class="shot-wrap">
-        <img class="shot-mobile" src="mweb_10.jpg" alt="통신사">
-        <span data-hl data-top="28" data-left="3" data-width="28" data-height="17" data-label="내 통신사 선택!"></span>
-      </div></div>
-      <div class="step-tip"><div class="tip-lbl">💡 알뜰폰 이용자</div><p>아래 행 <strong>SKT/KT/LG U+ 알뜰폰</strong> 선택</p></div>
-    </div><div class="step-arrow">↓</div>
-
-    <div class="step-card">
-      <div class="step-head"><div class="step-num">6</div><div class="step-info">
-        <div class="step-title">"문자(SMS) 인증" 선택</div>
-      </div></div>
-      <div class="shot-area bg-dark"><div class="shot-wrap">
-        <img class="shot-mobile" src="mweb_11.jpg" alt="인증방법">
-        <span data-hl data-top="49" data-left="4" data-width="91" data-height="14" data-label="문자(SMS) 인증 클릭!"></span>
-      </div></div>
-    </div><div class="step-arrow">↓</div>
-
-    <div class="step-card">
-      <div class="step-head"><div class="step-num">7</div><div class="step-info">
-        <div class="step-title">동의 체크 후 스크롤 내려 "다음" 클릭</div>
-      </div></div>
-      <div class="shot-area bg-dark"><div class="shot-wrap">
-        <img class="shot-mobile" src="mweb_12.jpg" alt="동의">
-        <span data-hl data-top="54" data-left="4" data-width="91" data-height="8" data-label="동의 체크 확인!"></span>
-      </div></div>
-      <div class="step-tip"><div class="tip-lbl">💡 다음 버튼이 안 보여요?</div><p>화면을 <strong>아래로 스크롤</strong>하면 빨간 "다음" 버튼이 나타납니다.</p></div>
-    </div><div class="step-arrow">↓</div>
-
-    <div class="step-card">
-      <div class="step-head"><div class="step-num">8</div><div class="step-info">
-        <div class="step-title">이름·생년월일·휴대폰·보안문자 입력<br>후 빨간 "확인" 클릭</div>
-      </div></div>
-      <div class="shot-area bg-dark"><div class="shot-wrap">
-        <img class="shot-mobile" src="mweb_1.jpg" alt="정보입력">
-        <span data-hl data-top="79" data-left="4" data-width="91" data-height="8" data-label="확인 버튼 클릭!"></span>
-      </div></div>
-      <div class="step-tip"><div class="tip-lbl">✏️ 입력 순서</div><p>① 이름 → ② 생년월일 6자리 → ③ 주민번호 앞 1자리 → ④ 휴대폰번호 → ⑤ 보안문자 → ⑥ 확인</p></div>
-    </div><div class="step-arrow">↓</div>
-
-    <div class="step-card">
-      <div class="step-head"><div class="step-num">9</div><div class="step-info">
-        <div class="step-title">상단 알림에서 인증번호 확인</div>
-      </div></div>
-      <div class="shot-area bg-dark"><div class="shot-wrap">
-        <img class="shot-mobile" src="mweb_2.jpg" alt="인증대기">
-        <span data-hl data-top="1.5" data-left="3" data-width="93" data-height="6" data-label="상단 알림에 번호 표시!"></span>
-      </div></div>
-    </div><div class="step-arrow">↓</div>
-
-    <div class="step-card">
-      <div class="step-head"><div class="step-num">10</div><div class="step-info">
-        <div class="step-title">문자함에서 인증번호 6자리 확인</div>
-      </div></div>
-      <div class="shot-area bg-dark"><div class="shot-wrap">
-        <img class="shot-mobile" src="mweb_9.jpg" alt="SMS">
-        <span data-hl data-top="27" data-left="3" data-width="65" data-height="11" data-label="이 숫자 6자리 기억!"></span>
-      </div></div>
-      <div class="step-tip"><div class="tip-lbl">⏰ 중요</div><p>인증번호는 <strong>3분 안에</strong> 입력해야 합니다!</p></div>
-    </div><div class="step-arrow">↓</div>
-
-    <div class="step-card">
-      <div class="step-head"><div class="step-num">11</div><div class="step-info">
-        <div class="step-title">인증번호 입력 후 "확인" 클릭</div>
-      </div></div>
-      <div class="shot-area bg-dark"><div class="shot-wrap">
-        <img class="shot-mobile" src="mweb_3.jpg" alt="인증번호입력">
-        <span data-hl data-top="26" data-left="54" data-width="39" data-height="10" data-label="확인 클릭!"></span>
-      </div></div>
-    </div><div class="step-arrow">↓</div>
-
-    <div class="step-card">
-      <div class="step-head"><div class="step-num">12</div><div class="step-info">
-        <div class="step-title">새 비밀번호 입력 후 "비밀번호 변경" 클릭</div>
-      </div></div>
-      <div class="shot-area bg-dark"><div class="shot-wrap">
-        <img class="shot-mobile" src="mweb_4.jpg" alt="비밀번호변경">
-        <span data-hl data-top="52" data-left="15" data-width="68" data-height="10" data-label="비밀번호 변경 클릭!"></span>
-      </div></div>
-      <div class="step-tip"><div class="tip-lbl">🔒 비밀번호 규칙</div><p>영문 + 숫자 + 특수문자, <strong>8~13자리</strong> · 예: Yong2024!</p></div>
-    </div>
-    <div class="complete-box">
-      <div style="font-size:34px;margin-bottom:8px">🎉</div>
-      <div style="font-family:'Noto Serif KR',serif;font-size:20px;color:#fff;font-weight:700;margin-bottom:6px">비밀번호 변경 완료!</div>
-      <div style="font-size:15px;color:var(--gold-light);line-height:1.7">새 비밀번호로 로그인하실 수 있습니다 😊</div>
-    </div>
-  </div>
-
-  <!-- ========== PC WEB ========== -->
-  <div id="sec-web" class="steps-wrap" style="display:none">
-    <div class="flow-title">💻 홈페이지(PC) — 비밀번호 찾기</div>
-
-    <div class="step-card">
-      <div class="step-head"><div class="step-num">1</div><div class="step-info">
-        <div class="step-title">로그인 화면에서 "비밀번호 찾기" 클릭</div>
-        <div class="step-sub">www.yongpyong.co.kr → 로그인</div>
-      </div></div>
-      <div class="shot-area sw-auto">
-        <img class="shot-full" src="web_1.jpg" alt="로그인">
-        <span data-hl data-top="37" data-left="60" data-width="17" data-height="6" data-label="여기 클릭!"></span>
+  <!-- ===== Manual ===== -->
+  <section id="manual">
+    <header class="top-header">
+      <div class="top-row">
+        <button class="back-btn" id="btnBack">←</button>
+        <div class="header">
+          <img src="img_logo.jpg" alt="모나용평" onerror="this.style.display='none'">
+          <span>비밀번호 찾기 안내</span>
+        </div>
       </div>
-    </div><div class="step-arrow">↓</div>
+      <nav class="tab-bar">
+        <button class="tab-btn active" data-tab="app"><span class="t">📱</span>모바일 앱</button>
+        <button class="tab-btn" data-tab="mweb"><span class="t">🌐</span>모바일 웹</button>
+        <button class="tab-btn" data-tab="web"><span class="t">💻</span>홈페이지(PC)</button>
+      </nav>
+    </header>
 
-    <div class="step-card">
-      <div class="step-head"><div class="step-num">2</div><div class="step-info">
-        <div class="step-title">아이디 입력 후 "휴대폰인증" 클릭</div>
-      </div></div>
-      <div class="shot-area sw-auto">
-        <img class="shot-full" src="web_2.jpg" alt="비밀번호찾기">
-        <span data-hl data-top="69" data-left="34" data-width="18" data-height="10" data-label="휴대폰인증 클릭!"></span>
-      </div>
-    </div><div class="step-arrow">↓</div>
-
-    <div class="step-card">
-      <div class="step-head"><div class="step-num">3</div><div class="step-info">
-        <div class="step-title">팝업창 — "휴대폰 본인 확인" 선택</div>
-      </div></div>
-      <div class="shot-area bg-dark"><div class="shot-wrap">
-        <img class="shot-mobile" src="web_3.jpg" alt="본인확인">
-        <span data-hl data-top="27" data-left="5" data-width="90" data-height="16" data-label="휴대폰 본인 확인 클릭!"></span>
-      </div></div>
-    </div><div class="step-arrow">↓</div>
-
-    <div class="step-card">
-      <div class="step-head"><div class="step-num">4</div><div class="step-info">
-        <div class="step-title">본인 통신사 선택</div>
-      </div></div>
-      <div class="shot-area bg-light"><div class="shot-wrap">
-        <img class="shot-mobile" src="web_4.jpg" alt="통신사">
-        <span data-hl data-top="32" data-left="4" data-width="27" data-height="17" data-label="내 통신사 선택!"></span>
-      </div></div>
-    </div><div class="step-arrow">↓</div>
-
-    <div class="step-card">
-      <div class="step-head"><div class="step-num">5</div><div class="step-info">
-        <div class="step-title">"문자(SMS) 인증" 선택</div>
-      </div></div>
-      <div class="shot-area bg-light"><div class="shot-wrap">
-        <img class="shot-mobile" src="web_5.jpg" alt="SMS인증">
-        <span data-hl data-top="56" data-left="5" data-width="89" data-height="14" data-label="문자(SMS) 인증 클릭!"></span>
-      </div></div>
-    </div><div class="step-arrow">↓</div>
-
-    <div class="step-card">
-      <div class="step-head"><div class="step-num">6</div><div class="step-info">
-        <div class="step-title">동의 체크 후 빨간 "다음" 클릭</div>
-      </div></div>
-      <div class="shot-area bg-light"><div class="shot-wrap">
-        <img class="shot-mobile" src="web_6.jpg" alt="다음">
-        <span data-hl data-top="80" data-left="5" data-width="89" data-height="8" data-label="다음 버튼 클릭!"></span>
-      </div></div>
-    </div><div class="step-arrow">↓</div>
-
-    <div class="step-card">
-      <div class="step-head"><div class="step-num">7</div><div class="step-info">
-        <div class="step-title">이름·생년월일·휴대폰·보안문자 입력<br>후 빨간 "확인" 클릭</div>
-      </div></div>
-      <div class="shot-area bg-light"><div class="shot-wrap">
-        <img class="shot-mobile" src="web_7.jpg" alt="정보입력">
-        <span data-hl data-top="83" data-left="5" data-width="89" data-height="8" data-label="확인 버튼 클릭!"></span>
-      </div></div>
-      <div class="step-tip"><div class="tip-lbl">✏️ 입력 순서</div><p>① 이름 → ② 생년월일 6자리 → ③ 주민번호 앞 1자리 → ④ 휴대폰번호 → ⑤ 보안문자 → ⑥ 확인</p></div>
-    </div><div class="step-arrow">↓</div>
-
-    <div class="step-card">
-      <div class="step-head"><div class="step-num">8</div><div class="step-info">
-        <div class="step-title">핸드폰 문자함에서 인증번호 확인</div>
-      </div></div>
-      <div class="shot-area bg-dark"><div class="shot-wrap">
-        <img class="shot-mobile" src="web_8.jpg" alt="SMS">
-        <span data-hl data-top="63" data-left="2" data-width="66" data-height="16" data-label="이 숫자 6자리 기억!"></span>
-      </div></div>
-      <div class="step-tip"><div class="tip-lbl">⏰ 중요</div><p>인증번호는 <strong>3분 안에</strong> 입력해야 합니다!</p></div>
-    </div><div class="step-arrow">↓</div>
-
-    <div class="step-card">
-      <div class="step-head"><div class="step-num">9</div><div class="step-info">
-        <div class="step-title">인증번호 입력 후 "확인" 클릭</div>
-      </div></div>
-      <div class="shot-area bg-light"><div class="shot-wrap">
-        <img class="shot-mobile" src="web_9.jpg" alt="인증번호입력">
-        <span data-hl data-top="29" data-left="5" data-width="89" data-height="13" data-label="인증번호 입력 → 확인!"></span>
-      </div></div>
-    </div><div class="step-arrow">↓</div>
-
-    <div class="step-card">
-      <div class="step-head"><div class="step-num">10</div><div class="step-info">
-        <div class="step-title">새 비밀번호 입력 후 "변경" 클릭</div>
-      </div></div>
-      <div class="shot-area sw-auto">
-        <img class="shot-full" src="web_10.jpg" alt="비밀번호변경" style="max-height:260px">
-        <span data-hl data-top="54" data-left="44" data-width="9" data-height="12" data-label="변경 클릭!"></span>
-      </div>
-      <div class="step-tip"><div class="tip-lbl">🔒 비밀번호 규칙</div><p>영문 + 숫자 포함 <strong>8~15자리</strong> · 예: Yong2024!</p></div>
+    <div class="notice">
+      <p>📋 <strong>노란 테두리</strong>로 표시된 부분을 순서대로 눌러 주세요.</p>
     </div>
-    <div class="complete-box">
-      <div style="font-size:34px;margin-bottom:8px">🎉</div>
-      <div style="font-family:'Noto Serif KR',serif;font-size:20px;color:#fff;font-weight:700;margin-bottom:6px">비밀번호 변경 완료!</div>
-      <div style="font-size:15px;color:var(--gold-light);line-height:1.7">새 비밀번호로 로그인하실 수 있습니다 😊</div>
+
+    <div class="wrap">
+      <div id="flowTitle" class="flow-title"></div>
+      <div id="flowRoot"></div>
+
+      <div class="help">
+        <h3>혼자 하기 어려우세요?</h3>
+        <p>전화 주시면 친절하게 도와드립니다 😊</p>
+        <a href="tel:1588-0009">📞 1588-0009</a>
+      </div>
+      <div class="footer">© MONA Yong Pyong · 고객센터 1588-0009</div>
     </div>
-  </div>
+  </section>
 
-  <div class="help-banner">
-    <h3>혼자 하기 어려우세요?</h3>
-    <p>전화 주시면 친절하게 도와드립니다 😊</p>
-    <a href="tel:1588-0009" class="help-tel">📞 1588-0009</a>
-  </div>
-  <div class="footer">© MONA Yong Pyong · 고객센터 1588-0009</div>
-</div>
+  <script>
+    /* =============================
+       1) 데이터(여기만 수정하면 화면 자동 생성)
+    ============================= */
+    const FLOWS = {
+      app: {
+        title: "📱 모바일 앱 — 비밀번호 찾기",
+        steps: [
+          { t:'모나용평 앱 실행 후<br>오른쪽 위 메뉴(☰) 누르기', img:'images/app/app_1.jpg', alt:'앱홈',
+            hl:{ top:1, right:8, w:11, h:5.5, label:'☰ 누르세요!' } },
+          { t:'메뉴에서 "로그인 →" 누르기', img:'images/app/app_2.jpg', alt:'메뉴',
+            hl:{ top:11, left:16, w:32, h:7.5, label:'로그인 누르세요!' } },
+          { t:'로그인 화면에서<br>"비밀번호 찾기" 누르기', img:'images/app/app_3.jpg', alt:'로그인',
+            hl:{ top:66.5, left:30, w:38, h:5.5, label:'비밀번호 찾기 클릭!' } },
+          { t:'아이디 입력 후 "휴대폰 인증" 누르기', sub:'아이디 입력 → 검은 동그라미 버튼', img:'images/app/app_4.jpg', alt:'비밀번호찾기',
+            hl:{ top:54, left:28, w:42, h:11, label:'휴대폰 인증 클릭!' } },
+          { t:'본인 통신사 선택', sub:'SKT · KT · LG U+ 중 해당 항목', img:'images/app/app_5.jpg', alt:'통신사',
+            hl:{ top:32, left:3, w:28, h:16, label:'내 통신사 선택!' },
+            tip:{ lbl:'💡 알뜰폰 이용자', html:'아래 행 <strong>SKT/KT/LG U+ 알뜰폰</strong> 선택' } },
+          { t:'"문자(SMS) 인증" 선택', img:'images/app/app_6.jpg', alt:'인증방법',
+            hl:{ top:51, left:5, w:89, h:14, label:'문자(SMS) 인증 클릭!' } },
+          { t:'동의 체크 후 빨간 "다음" 클릭', img:'images/app/app_7.jpg', alt:'다음',
+            hl:{ top:76, left:5, w:89, h:9, label:'다음 버튼 클릭!' } },
+          { t:'이름·생년월일·휴대폰·보안문자 입력<br>후 빨간 "확인" 클릭', img:'images/app/app_8.jpg', alt:'정보입력',
+            hl:{ top:82, left:5, w:89, h:7, label:'확인 버튼 클릭!' },
+            tip:{ lbl:'✏️ 입력 순서', html:'① 이름 → ② 생년월일 6자리 → ③ 주민번호 앞 1자리 → ④ 휴대폰번호 → ⑤ 보안문자 → ⑥ 확인' } },
+          { t:'화면 상단 알림 확인', sub:'문자함에서 NICE아이디 인증번호 확인', img:'images/app/app_9.jpg', alt:'인증대기',
+            hl:{ top:1.5, left:3, w:93, h:6, label:'상단 알림에 번호 표시!' } },
+          { t:'문자로 온 인증번호 6자리 확인', img:'images/app/app_10.jpg', alt:'SMS',
+            hl:{ top:27, left:3, w:65, h:11, label:'이 숫자 6자리 기억!' },
+            tip:{ lbl:'⏰ 중요', html:'인증번호는 <strong>3분 안에</strong> 입력해야 합니다!' } },
+          { t:'인증번호 입력 후 "확인" 클릭', img:'images/app/app_11.jpg', alt:'인증번호입력',
+            hl:{ top:24, left:54, w:38, h:10, label:'확인 클릭!' } },
+          { t:'새 비밀번호 입력 후 "비밀번호변경" 클릭', img:'images/app/app_12.jpg', alt:'비밀번호변경',
+            hl:{ top:65, left:9, w:47, h:11, label:'비밀번호변경 클릭!' },
+            tip:{ lbl:'🔒 비밀번호 규칙', html:'영문 + 숫자 + 특수문자, <strong>8~13자리</strong> · 예: Yong2024!' } },
+        ],
+        complete: { title:'비밀번호 변경 완료!', desc:'새 비밀번호로 로그인하실 수 있습니다 😊' }
+      },
 
-<script>
-  var currentTab = 'app';
+      mweb: {
+        title: "🌐 모바일 웹 — 비밀번호 찾기",
+        steps: [
+          { t:'스마트폰 브라우저에서<br>yongpyong.co.kr 접속 후 메뉴(☰)', img:'mweb_5.jpg', alt:'모바일웹홈',
+            hl:{ top:1.5, left:1.5, w:8, h:4.5, label:'☰ 클릭!' } },
+          { t:'메뉴에서 "로그인" 클릭', img:'mweb_6.jpg', alt:'메뉴',
+            hl:{ top:10, left:56, w:27, h:5.5, label:'로그인 클릭!' } },
+          { t:'로그인 화면에서 "비밀번호찾기" 클릭', img:'mweb_7.jpg', alt:'로그인',
+            hl:{ top:56.5, left:20, w:37, h:7, label:'비밀번호찾기 클릭!' } },
+          { t:'아이디 입력 후 "휴대폰인증" 클릭', img:'mweb_8.jpg', alt:'비밀번호찾기',
+            hl:{ top:42, left:2, w:46, h:18, label:'휴대폰인증 클릭!' } },
+          { t:'본인 통신사 선택', img:'mweb_10.jpg', alt:'통신사',
+            hl:{ top:28, left:3, w:28, h:17, label:'내 통신사 선택!' },
+            tip:{ lbl:'💡 알뜰폰 이용자', html:'아래 행 <strong>SKT/KT/LG U+ 알뜰폰</strong> 선택' } },
+          { t:'"문자(SMS) 인증" 선택', img:'mweb_11.jpg', alt:'인증방법',
+            hl:{ top:49, left:4, w:91, h:14, label:'문자(SMS) 인증 클릭!' } },
+          { t:'동의 체크 후 스크롤 내려 "다음" 클릭', img:'mweb_12.jpg', alt:'동의',
+            hl:{ top:54, left:4, w:91, h:8, label:'동의 체크 확인!' },
+            tip:{ lbl:'💡 다음 버튼이 안 보여요?', html:'화면을 <strong>아래로 스크롤</strong>하면 빨간 "다음" 버튼이 나타납니다.' } },
+          { t:'이름·생년월일·휴대폰·보안문자 입력<br>후 빨간 "확인" 클릭', img:'mweb_1.jpg', alt:'정보입력',
+            hl:{ top:79, left:4, w:91, h:8, label:'확인 버튼 클릭!' },
+            tip:{ lbl:'✏️ 입력 순서', html:'① 이름 → ② 생년월일 6자리 → ③ 주민번호 앞 1자리 → ④ 휴대폰번호 → ⑤ 보안문자 → ⑥ 확인' } },
+          { t:'상단 알림에서 인증번호 확인', img:'mweb_2.jpg', alt:'인증대기',
+            hl:{ top:1.5, left:3, w:93, h:6, label:'상단 알림에 번호 표시!' } },
+          { t:'문자함에서 인증번호 6자리 확인', img:'mweb_9.jpg', alt:'SMS',
+            hl:{ top:27, left:3, w:65, h:11, label:'이 숫자 6자리 기억!' },
+            tip:{ lbl:'⏰ 중요', html:'인증번호는 <strong>3분 안에</strong> 입력해야 합니다!' } },
+          { t:'인증번호 입력 후 "확인" 클릭', img:'mweb_3.jpg', alt:'인증번호입력',
+            hl:{ top:26, left:54, w:39, h:10, label:'확인 클릭!' } },
+          { t:'새 비밀번호 입력 후 "비밀번호 변경" 클릭', img:'mweb_4.jpg', alt:'비밀번호변경',
+            hl:{ top:52, left:15, w:68, h:10, label:'비밀번호 변경 클릭!' },
+            tip:{ lbl:'🔒 비밀번호 규칙', html:'영문 + 숫자 + 특수문자, <strong>8~13자리</strong> · 예: Yong2024!' } },
+        ],
+        complete: { title:'비밀번호 변경 완료!', desc:'새 비밀번호로 로그인하실 수 있습니다 😊' }
+      },
 
-  function showManual(type) {
-    currentTab = type;
-    document.getElementById('landing').style.display = 'none';
-    document.getElementById('manual').style.display = 'block';
-    activateTab(type);
-    window.scrollTo(0, 0);
-    setTimeout(function(){ animateCards(); buildSpotlights(); }, 150);
-  }
+      web: {
+        title: "💻 홈페이지(PC) — 비밀번호 찾기",
+        steps: [
+          { t:'로그인 화면에서 "비밀번호 찾기" 클릭', sub:'www.yongpyong.co.kr → 로그인', img:'web_1.jpg', alt:'로그인', full:true,
+            hl:{ top:37, left:60, w:17, h:6, label:'여기 클릭!' } },
+          { t:'아이디 입력 후 "휴대폰인증" 클릭', img:'web_2.jpg', alt:'비밀번호찾기', full:true,
+            hl:{ top:69, left:34, w:18, h:10, label:'휴대폰인증 클릭!' } },
+          { t:'팝업창 — "휴대폰 본인 확인" 선택', img:'web_3.jpg', alt:'본인확인',
+            hl:{ top:27, left:5, w:90, h:16, label:'휴대폰 본인 확인 클릭!' } },
+          { t:'본인 통신사 선택', img:'web_4.jpg', alt:'통신사',
+            hl:{ top:32, left:4, w:27, h:17, label:'내 통신사 선택!' } },
+          { t:'"문자(SMS) 인증" 선택', img:'web_5.jpg', alt:'SMS인증',
+            hl:{ top:56, left:5, w:89, h:14, label:'문자(SMS) 인증 클릭!' } },
+          { t:'동의 체크 후 빨간 "다음" 클릭', img:'web_6.jpg', alt:'다음',
+            hl:{ top:80, left:5, w:89, h:8, label:'다음 버튼 클릭!' } },
+          { t:'이름·생년월일·휴대폰·보안문자 입력<br>후 빨간 "확인" 클릭', img:'web_7.jpg', alt:'정보입력',
+            hl:{ top:83, left:5, w:89, h:8, label:'확인 버튼 클릭!' },
+            tip:{ lbl:'✏️ 입력 순서', html:'① 이름 → ② 생년월일 6자리 → ③ 주민번호 앞 1자리 → ④ 휴대폰번호 → ⑤ 보안문자 → ⑥ 확인' } },
+          { t:'핸드폰 문자함에서 인증번호 확인', img:'web_8.jpg', alt:'SMS',
+            hl:{ top:63, left:2, w:66, h:16, label:'이 숫자 6자리 기억!' },
+            tip:{ lbl:'⏰ 중요', html:'인증번호는 <strong>3분 안에</strong> 입력해야 합니다!' } },
+          { t:'인증번호 입력 후 "확인" 클릭', img:'web_9.jpg', alt:'인증번호입력',
+            hl:{ top:29, left:5, w:89, h:13, label:'인증번호 입력 → 확인!' } },
+          { t:'새 비밀번호 입력 후 "변경" 클릭', img:'web_10.jpg', alt:'비밀번호변경', full:true,
+            hl:{ top:54, left:44, w:9, h:12, label:'변경 클릭!' },
+            tip:{ lbl:'🔒 비밀번호 규칙', html:'영문 + 숫자 포함 <strong>8~15자리</strong> · 예: Yong2024!' } },
+        ],
+        complete: { title:'비밀번호 변경 완료!', desc:'새 비밀번호로 로그인하실 수 있습니다 😊' }
+      }
+    };
 
-  function switchTab(type) {
-    currentTab = type;
-    activateTab(type);
-    window.scrollTo(0, 0);
-    setTimeout(function(){ animateCards(); buildSpotlights(); }, 150);
-  }
+    /* =============================
+       2) 렌더 + Spotlight + 애니메이션
+    ============================= */
+    const $ = (s, p=document)=>p.querySelector(s);
+    const $$ = (s, p=document)=>Array.from(p.querySelectorAll(s));
 
-  function activateTab(type) {
-    ['app','mweb','web'].forEach(function(t) {
-      document.getElementById('sec-'+t).style.display = (t===type) ? 'block' : 'none';
-      var tb = document.getElementById('tab-'+t);
-      if(tb) tb.classList.toggle('active', t===type);
-    });
-  }
+    const landing = $("#landing");
+    const manual  = $("#manual");
+    const flowTitle = $("#flowTitle");
+    const flowRoot  = $("#flowRoot");
 
-  function goBack() {
-    document.getElementById('manual').style.display = 'none';
-    document.getElementById('landing').style.display = 'flex';
-    window.scrollTo(0, 0);
-  }
+    let currentTab = "app";
+    let obs;
 
-  function animateCards() {
-    var obs = new IntersectionObserver(function(entries) {
-      entries.forEach(function(e){ if(e.isIntersecting) e.target.classList.add('visible'); });
-    }, { threshold: 0.07 });
-    document.querySelectorAll('.step-card').forEach(function(c){
-      c.classList.remove('visible'); obs.observe(c);
-    });
-  }
+    function escHtml(s){ return (s||"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;"); }
 
-  function buildSpotlights() {
-    document.querySelectorAll('.shot-wrap, .sw-auto').forEach(function(wrap) {
-      wrap.querySelectorAll('.spot-overlay,.spot-hole,.spot-callout').forEach(function(e){ e.remove(); });
-      var hls = wrap.querySelectorAll('[data-hl]');
-      if (!hls.length) return;
+    function renderFlow(key){
+      currentTab = key;
+      const data = FLOWS[key];
 
-      var overlay = document.createElement('div');
-      overlay.className = 'spot-overlay';
-      wrap.appendChild(overlay);
+      flowTitle.innerHTML = data.title;
+      flowRoot.innerHTML = "";
 
-      hls.forEach(function(el) {
-        var top    = parseFloat(el.dataset.top);
-        var left   = el.dataset.left !== undefined ? parseFloat(el.dataset.left) : null;
-        var right  = el.dataset.right !== undefined ? parseFloat(el.dataset.right) : null;
-        var width  = parseFloat(el.dataset.width);
-        var height = parseFloat(el.dataset.height);
-        var label  = el.dataset.label;
-        var pos    = el.dataset.pos || 'below';
-
-        // Hole
-        var hole = document.createElement('div');
-        hole.className = 'spot-hole';
-        var css = 'top:'+top+'%;width:'+width+'%;height:'+height+'%;border-radius:12px;';
-        if (right !== null) css += 'right:'+right+'%;left:auto;';
-        else css += 'left:'+left+'%;';
-        hole.style.cssText = css;
-        wrap.appendChild(hole);
-
-        // Callout position
-        var cTop, cLeft;
-        if (pos === 'above') {
-          cTop = (top - 18) + '%';
-        } else {
-          cTop = (top + height + 2) + '%';
-        }
-        if (right !== null) {
-          cLeft = (100 - right - width/2) + '%';
-        } else {
-          cLeft = Math.min(Math.max(left + width/2, 12), 82) + '%';
-        }
-
-        var callout = document.createElement('div');
-        callout.className = 'spot-callout';
-        callout.style.cssText = 'top:'+cTop+';left:'+cLeft+';transform:translateX(-50%);';
-
-        var finger = '<div class="spot-finger">&#128070;</div>';
-        var arrow  = '<div class="spot-arrow-line"></div>';
-        var bubble = '<div class="spot-bubble">'+label+'</div>';
-
-        if (pos === 'above') {
-          callout.innerHTML = bubble + '<div class="spot-arrow-line" style="transform:scaleY(-1)"></div>' + finger;
-        } else {
-          callout.innerHTML = finger + arrow + bubble;
-        }
-        wrap.appendChild(callout);
+      data.steps.forEach((st, idx)=>{
+        flowRoot.appendChild(stepCard(idx+1, st));
+        if (idx !== data.steps.length-1) flowRoot.appendChild(arrowEl());
       });
-    });
-  }
 
-  window.addEventListener('load', function() {
-    buildSpotlights();
-  });
-</script>
+      flowRoot.appendChild(completeEl(data.complete));
+      animateCards();
+      buildSpotlights();
+      setActiveTab(key);
+      window.scrollTo(0,0);
+    }
+
+    function stepCard(n, st){
+      const card = document.createElement("div");
+      card.className = "card";
+
+      const sub = st.sub ? `<div class="sub">${st.sub}</div>` : "";
+      card.innerHTML = `
+        <div class="head">
+          <div class="num">${n}</div>
+          <div>
+            <div class="title">${st.t}</div>
+            ${sub}
+          </div>
+        </div>
+        <div class="shot-area">
+          <div class="shot-box ${st.full ? "" : ""}">
+            <img class="${st.full ? "shot-full" : "shot-mobile"}" src="${st.img}" alt="${escHtml(st.alt||"")}" ${st.full && st.img==="web_10.jpg" ? 'style="max-height:260px"' : ""}>
+            <span data-hl
+              data-top="${st.hl.top}"
+              ${st.hl.left!=null ? `data-left="${st.hl.left}"` : ""}
+              ${st.hl.right!=null ? `data-right="${st.hl.right}"` : ""}
+              data-width="${st.hl.w}"
+              data-height="${st.hl.h}"
+              data-label="${escHtml(st.hl.label||"")}"
+              ${st.hl.pos ? `data-pos="${st.hl.pos}"` : ""}></span>
+          </div>
+        </div>
+      `;
+
+      if (st.tip){
+        const tip = document.createElement("div");
+        tip.className = "tip";
+        tip.innerHTML = `<div class="lbl">${st.tip.lbl}</div><p>${st.tip.html}</p>`;
+        card.appendChild(tip);
+      }
+      return card;
+    }
+
+    function arrowEl(){
+      const d = document.createElement("div");
+      d.className = "arrow";
+      d.textContent = "↓";
+      return d;
+    }
+
+    function completeEl(c){
+      const d = document.createElement("div");
+      d.className = "complete";
+      d.innerHTML = `
+        <div class="emo">🎉</div>
+        <div class="t">${escHtml(c.title)}</div>
+        <div class="d">${escHtml(c.desc)}</div>
+      `;
+      return d;
+    }
+
+    function setActiveTab(key){
+      $$(".tab-btn").forEach(b=>b.classList.toggle("active", b.dataset.tab===key));
+    }
+
+    function animateCards(){
+      if (obs) obs.disconnect();
+      obs = new IntersectionObserver((entries)=>{
+        entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add("visible"); });
+      }, { threshold:0.07 });
+
+      $$(".card").forEach(c=>{
+        c.classList.remove("visible");
+        obs.observe(c);
+      });
+    }
+
+    function buildSpotlights(){
+      $$(".shot-box").forEach(box=>{
+        // cleanup
+        $$(".spot-overlay,.spot-hole,.spot-callout", box).forEach(el=>el.remove());
+
+        const hls = $$("[data-hl]", box);
+        if (!hls.length) return;
+
+        const overlay = document.createElement("div");
+        overlay.className = "spot-overlay";
+        box.appendChild(overlay);
+
+        hls.forEach(el=>{
+          const top = parseFloat(el.dataset.top);
+          const left = el.dataset.left !== undefined ? parseFloat(el.dataset.left) : null;
+          const right = el.dataset.right !== undefined ? parseFloat(el.dataset.right) : null;
+          const w = parseFloat(el.dataset.width);
+          const h = parseFloat(el.dataset.height);
+          const label = el.dataset.label || "";
+          const pos = el.dataset.pos || "below";
+
+          // hole
+          const hole = document.createElement("div");
+          hole.className = "spot-hole";
+          let css = `top:${top}%;width:${w}%;height:${h}%;`;
+          if (right !== null) css += `right:${right}%;left:auto;`;
+          else css += `left:${left}%;`;
+          hole.style.cssText = css;
+          box.appendChild(hole);
+
+          // callout
+          const callout = document.createElement("div");
+          callout.className = "spot-callout";
+
+          // top position
+          const cTop = (pos==="above") ? (top - 18) : (top + h + 2);
+
+          // left position (클램프: 화면 밖으로 튀지 않게)
+          let rawLeft = (right !== null) ? (100 - right - w/2) : (left + w/2);
+          rawLeft = Math.min(Math.max(rawLeft, 12), 88);
+
+          callout.style.cssText = `top:${cTop}%;left:${rawLeft}%;transform:translateX(-50%);`;
+
+          if (pos==="above"){
+            callout.innerHTML = `
+              <div class="spot-bubble">${escHtml(label)}</div>
+              <div class="spot-line" style="transform:scaleY(-1)"></div>
+              <div class="spot-finger">👉</div>`;
+          } else {
+            callout.innerHTML = `
+              <div class="spot-finger">👉</div>
+              <div class="spot-line"></div>
+              <div class="spot-bubble">${escHtml(label)}</div>`;
+          }
+          box.appendChild(callout);
+        });
+      });
+    }
+
+    /* =============================
+       3) UI 이벤트
+    ============================= */
+    function openManual(tab){
+      landing.style.display = "none";
+      manual.style.display = "block";
+      renderFlow(tab);
+      setTimeout(()=>buildSpotlights(), 60);
+    }
+    function goBack(){
+      manual.style.display = "none";
+      landing.style.display = "flex";
+      window.scrollTo(0,0);
+    }
+
+    $$(".choice-btn").forEach(btn=>{
+      btn.addEventListener("click", ()=>openManual(btn.dataset.go));
+    });
+
+    $("#btnBack").addEventListener("click", goBack);
+
+    $$(".tab-btn").forEach(btn=>{
+      btn.addEventListener("click", ()=>renderFlow(btn.dataset.tab));
+    });
+
+    window.addEventListener("load", ()=>{ /* 첫 로드에서는 랜딩 */ });
+    window.addEventListener("resize", ()=>{ if (manual.style.display==="block") buildSpotlights(); });
+  </script>
 </body>
 </html>
