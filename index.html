@@ -389,8 +389,8 @@ function buildSpot(){
     mid=Math.min(Math.max(mid,12),88);
     c.style.cssText=`top:${cTop}%;left:${mid}%;transform:translateX(-50%);`;
     c.innerHTML=(pos==="above")
-      ? `<div class="bub">${esc(label)}</div><div class="line" style="transform:scaleY(-1)"><div></div></div><div class="finger">👉</div>`
-      : `<div class="finger">👉</div><div class="line"><div></div></div><div class="bub">${esc(label)}</div>`;
+      ? `<div class="bub">${esc(label)}</div><div class="line" style="transform:scaleY(-1)"><div></div></div><div class="finger">👆</div>`
+      : `<div class="finger">👆</div><div class="line"><div></div></div><div class="bub">${esc(label)}</div>`;
     p.appendChild(c);
   });
 }
