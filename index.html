@@ -65,16 +65,14 @@ body{font-family:"Noto Sans KR",system-ui,sans-serif;background:var(--bg);color:
 .title{font-size:17px;font-weight:900;color:var(--navy);line-height:1.35}
 .sub{margin-top:2px;font-size:13px;color:#777;line-height:1.5}
 
-/* shot area (콜아웃이 밖으로 나가도 잘리지 않게 여백 증가) */
 .shot-area{
   background:
     radial-gradient(900px 280px at 50% 20%, rgba(255,255,255,.10), rgba(0,0,0,0) 60%),
     linear-gradient(180deg,#121826,#0b1220);
-  padding:24px 0 34px; /* ✅ 여백 */
+  padding:24px 0 34px;
   text-align:center;
 }
 
-/* Galaxy-like simple bezel */
 .phone{
   position:relative;
   display:inline-block;
@@ -84,7 +82,6 @@ body{font-family:"Noto Sans KR",system-ui,sans-serif;background:var(--bg);color:
   box-shadow:0 18px 44px rgba(0,0,0,.38), inset 0 0 0 1px rgba(255,255,255,.08);
 }
 
-/* ✅ 콜아웃 전용 레이어(스크린 밖으로 나가도 OK) */
 .spot-layer{
   position:absolute;
   inset:0;
@@ -93,7 +90,6 @@ body{font-family:"Noto Sans KR",system-ui,sans-serif;background:var(--bg);color:
   overflow:visible;
 }
 
-/* screen + stacked images (highlight 기준은 무조건 screen) */
 .screen{
   position:relative;
   z-index:2;
@@ -117,7 +113,6 @@ body{font-family:"Noto Sans KR",system-ui,sans-serif;background:var(--bg);color:
   object-position:top;
 }
 
-/* blur는 너무 강하지 않게 + scale 제거(어긋남 방지) */
 .img-blur{filter: blur(2px) brightness(.82) saturate(.98); transform:translateZ(0)}
 .img-sharp{
   position:absolute; inset:0;
@@ -125,7 +120,6 @@ body{font-family:"Noto Sans KR",system-ui,sans-serif;background:var(--bg);color:
   clip-path: inset(var(--ct) var(--cr) var(--cb) var(--cl) round var(--r));
 }
 
-/* ring (screen 안에만 표시) */
 .ring{
   position:absolute; z-index:6; pointer-events:none;
   border-radius:var(--r);
@@ -133,7 +127,6 @@ body{font-family:"Noto Sans KR",system-ui,sans-serif;background:var(--bg);color:
   box-shadow:0 12px 28px rgba(255,196,40,.30);
 }
 
-/* callout (spot-layer에 붙어서 이미지 밖으로 나가도 안 잘림) */
 .callout{position:absolute;z-index:10;pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:6px;filter:drop-shadow(0 10px 18px rgba(0,0,0,.25))}
 .bub{background:rgba(255,255,255,.94);color:var(--navy);font-size:14px;font-weight:900;padding:9px 14px;border-radius:999px;white-space:nowrap;border:1px solid rgba(255,255,255,.6);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 .finger{font-size:26px;animation:f 1.4s ease-in-out infinite;transform-origin:50% 100%}
@@ -158,7 +151,7 @@ body{font-family:"Noto Sans KR",system-ui,sans-serif;background:var(--bg);color:
 .help a{display:inline-flex;gap:8px;align-items:center;background:var(--gold);color:#fff;text-decoration:none;font-size:20px;font-weight:900;padding:12px 26px;border-radius:999px;box-shadow:0 10px 20px rgba(184,150,90,.25)}
 .footer{border-top:1px solid rgba(232,228,222,.8);text-align:center;padding:14px;font-size:12px;color:#98a2b3}
 
-/* ===== HL Editor ===== */
+/* HL Editor */
 .hl-editor{
   position:fixed; right:14px; bottom:14px; z-index:9999;
   display:flex; gap:8px; align-items:center;
@@ -391,7 +384,7 @@ function stepCard(n,st){
             data-label="${esc(st.hl.label||"")}"
             ${st.hl.pos?`data-pos="${st.hl.pos}"`:""}></span>
         </div>
-        <div class="spot-layer"></div> <!-- ✅ 콜아웃 레이어 -->
+        <div class="spot-layer"></div>
       </div>
     </div>`;
   if(st.tip){
@@ -417,17 +410,46 @@ async function waitImgs(root){
   })));
 }
 
-/* ===== highlight build
-   - ring/clip: screen 기준(이미지 안)
-   - callout: spot-layer에 px로 배치(이미지 밖으로 나가도 안 잘림)
-===== */
+function resetShotAreaPadding(){
+  $$(".shot-area").forEach(shot=>{
+    if(!shot.dataset.basePb){
+      const cs = getComputedStyle(shot);
+      shot.dataset.basePb = String(parseFloat(cs.paddingBottom) || 0);
+    }
+    shot.style.paddingBottom = shot.dataset.basePb + "px";
+  });
+}
+
+function expandShotAreaToFitCallouts(){
+  $$(".card").forEach(card=>{
+    const shot = $(".shot-area", card);
+    if(!shot) return;
+
+    const basePB = parseFloat(shot.dataset.basePb || "0") || 0;
+
+    const shotRect = shot.getBoundingClientRect();
+    let maxBottom = shotRect.bottom;
+
+    $$(".callout", shot).forEach(co=>{
+      const r = co.getBoundingClientRect();
+      if(r.bottom > maxBottom) maxBottom = r.bottom;
+    });
+
+    const overflow = maxBottom - shotRect.bottom;
+    const extra = overflow > 0 ? Math.ceil(overflow) + 16 : 0;
+
+    shot.style.paddingBottom = (basePB + extra) + "px";
+  });
+}
+
 function buildSpot(){
+  resetShotAreaPadding();
+
   $$(".phone").forEach(p=>{
     const s=$(".screen",p);
     const layer=$(".spot-layer",p);
     if(!s || !layer) return;
 
-    // cleanup
     $$(".ring,.hl-rect",s).forEach(x=>x.remove());
     $$(".callout",layer).forEach(x=>x.remove());
 
@@ -440,20 +462,17 @@ function buildSpot(){
     const label=hl.dataset.label||"", pos=hl.dataset.pos||"below";
     const left = (right0!=null) ? (100 - right0 - w) : left0;
 
-    // clip vars: screen 기준
     const ct=top, cl=left, cb=100-(top+h), cr=100-(left+w);
     s.style.setProperty("--ct", ct+"%");
     s.style.setProperty("--cr", cr+"%");
     s.style.setProperty("--cb", cb+"%");
     s.style.setProperty("--cl", cl+"%");
 
-    // ring: screen 안
     const ring=document.createElement("div");
     ring.className="ring";
     ring.style.cssText=`top:${top}%;left:${left}%;width:${w}%;height:${h}%;`;
     s.appendChild(ring);
 
-    // callout: phone의 spot-layer(px 좌표로)
     const sRect=s.getBoundingClientRect();
     const pRect=p.getBoundingClientRect();
 
@@ -476,6 +495,8 @@ function buildSpot(){
 
     layer.appendChild(c);
   });
+
+  expandShotAreaToFitCallouts();
 }
 
 async function render(k){
@@ -504,7 +525,7 @@ $("#back").addEventListener("click",back);
 $$(".tab").forEach(b=>b.addEventListener("click",()=>render(b.dataset.tab)));
 addEventListener("resize",()=>manual.style.display==="block"&&buildSpot());
 
-/* ===== HL Editor (네 코드 그대로) ===== */
+/* HL Editor (네 코드 그대로) */
 let HL_EDIT=false;
 let hlTarget=null; // { key, idx, st, screenEl }
 
