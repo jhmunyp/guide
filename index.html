@@ -5,82 +5,84 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3" />
 <title>비밀번호 찾기 안내 | 모나용평</title>
 
-<!-- 로컬 폰트 preload (경로: /fonts/...) -->
-<link rel="preload" href="/fonts/NanumBarunGothicSubset.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/fonts/NanumMyeongjo.woff2" as="font" type="font/woff2" crossorigin>
+<!-- ✅ 로컬 폰트(woff2) 사용: ./fonts 폴더 기준 -->
+<link rel="preload" href="./fonts/NanumBarunGothicSubset.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="./fonts/NanumBarunGothicLightSubset.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="./fonts/NanumBarunGothicUltraLightSubset.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="./fonts/NanumMyeongjo.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="./fonts/NanumMyeongjoBold.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="./fonts/NanumMyeongjoExtraBold.woff2" as="font" type="font/woff2" crossorigin>
 
 <style>
-/* =========================
-   Local Fonts (WOFF2 only)
-   - 본문: NanumBarunGothic
-   - 제목: NanumMyeongjo
-========================= */
+/* ===== Local Fonts (Nanum) ===== */
 @font-face{
   font-family:"NanumBarunGothic";
-  src:url("/fonts/NanumBarunGothicUltraLightSubset.woff2") format("woff2");
-  font-weight:100;
+  src:url("./fonts/NanumBarunGothicUltraLightSubset.woff2") format("woff2");
+  font-weight:200;
+  font-style:normal;
   font-display:swap;
 }
 @font-face{
   font-family:"NanumBarunGothic";
-  src:url("/fonts/NanumBarunGothicLightSubset.woff2") format("woff2");
+  src:url("./fonts/NanumBarunGothicLightSubset.woff2") format("woff2");
   font-weight:300;
+  font-style:normal;
   font-display:swap;
 }
 @font-face{
   font-family:"NanumBarunGothic";
-  src:url("/fonts/NanumBarunGothicSubset.woff2") format("woff2");
+  src:url("./fonts/NanumBarunGothicSubset.woff2") format("woff2");
   font-weight:400;
+  font-style:normal;
   font-display:swap;
 }
+/* Bold 파일이 별도로 없으면 700에서도 400을 사용(브라우저가 굵게 렌더링) */
 @font-face{
   font-family:"NanumBarunGothic";
-  src:url("/fonts/NanumBarunGothicBoldSubset.woff2") format("woff2");
+  src:url("./fonts/NanumBarunGothicSubset.woff2") format("woff2");
   font-weight:700;
+  font-style:normal;
   font-display:swap;
 }
 
 @font-face{
   font-family:"NanumMyeongjo";
-  src:url("/fonts/NanumMyeongjo.woff2") format("woff2");
+  src:url("./fonts/NanumMyeongjo.woff2") format("woff2");
   font-weight:400;
+  font-style:normal;
   font-display:swap;
 }
 @font-face{
   font-family:"NanumMyeongjo";
-  src:url("/fonts/NanumMyeongjoBold.woff2") format("woff2");
+  src:url("./fonts/NanumMyeongjoBold.woff2") format("woff2");
   font-weight:700;
+  font-style:normal;
   font-display:swap;
 }
 @font-face{
   font-family:"NanumMyeongjo";
-  src:url("/fonts/NanumMyeongjoExtraBold.woff2") format("woff2");
+  src:url("./fonts/NanumMyeongjoExtraBold.woff2") format("woff2");
   font-weight:800;
+  font-style:normal;
   font-display:swap;
 }
 
-/* base */
 :root{
   --navy:#1a1f2e; --gold:#b8965a; --gold2:#d4af7a; --line:#e8e4de;
   --bg:#f6f7fb; --card:#fff;
   --dim:.42; --r:18px;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
 body{
-  font-family:"NanumBarunGothic", system-ui, -apple-system, sans-serif;
-  background:var(--bg);
-  color:#111;
+  font-family:"NanumBarunGothic", system-ui, -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", Segoe UI, Roboto, Helvetica, Arial, "Segoe UI Emoji";
+  background:var(--bg);color:#111
 }
 
 /* landing */
 #landing{min-height:100vh;min-height:100dvh;background:var(--navy);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:50px 24px 60px}
 .land-logo{height:36px;filter:brightness(0) invert(1);margin-bottom:36px}
 .land-line{width:48px;height:2px;background:var(--gold);margin:0 auto 28px}
-.land-title{
-  font-family:"NanumMyeongjo", serif;
-  font-size:28px;font-weight:700;color:#fff;text-align:center;line-height:1.5;margin-bottom:10px
-}
+.land-title{font-family:"NanumMyeongjo", serif;font-size:28px;font-weight:800;color:#fff;text-align:center;line-height:1.5;margin-bottom:10px}
 .land-sub{font-size:15px;color:var(--gold2);text-align:center;line-height:1.6;margin-bottom:44px}
 .land-q{font-size:13px;color:#7788aa;letter-spacing:.08em;margin-bottom:18px;text-align:center}
 .choice-grid{width:100%;max-width:380px;display:flex;flex-direction:column;gap:13px}
@@ -111,8 +113,7 @@ body{
 
 .wrap{padding:18px 16px 20px}
 .flow-title{
-  font-family:"NanumMyeongjo", serif;
-  font-size:16px;font-weight:800;color:var(--navy);
+  font-family:"NanumMyeongjo", serif;font-size:16px;font-weight:800;color:var(--navy);
   border-bottom:2px solid var(--gold);padding-bottom:8px;margin-bottom:16px;
   display:flex;align-items:center;gap:8px;line-height:1;
 }
@@ -125,6 +126,7 @@ body{
 .title{font-size:17px;font-weight:900;color:var(--navy);line-height:1.35}
 .sub{margin-top:2px;font-size:13px;color:#777;line-height:1.5}
 
+/* shot area */
 .shot-area{
   background:
     radial-gradient(900px 280px at 50% 20%, rgba(255,255,255,.10), rgba(0,0,0,0) 60%),
@@ -133,6 +135,7 @@ body{
   text-align:center;
 }
 
+/* phone */
 .phone{
   position:relative;
   display:inline-block;
@@ -141,7 +144,6 @@ body{
   background:linear-gradient(180deg,#0e1526,#060a12);
   box-shadow:0 18px 44px rgba(0,0,0,.38), inset 0 0 0 1px rgba(255,255,255,.08);
 }
-
 .spot-layer{
   position:absolute;
   inset:0;
@@ -150,6 +152,7 @@ body{
   overflow:visible;
 }
 
+/* screen */
 .screen{
   position:relative;
   z-index:2;
@@ -180,6 +183,7 @@ body{
   clip-path: inset(var(--ct) var(--cr) var(--cb) var(--cl) round var(--r));
 }
 
+/* ring */
 .ring{
   position:absolute; z-index:6; pointer-events:none;
   border-radius:var(--r);
@@ -187,6 +191,7 @@ body{
   box-shadow:0 12px 28px rgba(255,196,40,.30);
 }
 
+/* callout */
 .callout{position:absolute;z-index:10;pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:6px;filter:drop-shadow(0 10px 18px rgba(0,0,0,.25))}
 .bub{background:rgba(255,255,255,.94);color:var(--navy);font-size:14px;font-weight:900;padding:9px 14px;border-radius:999px;white-space:nowrap;border:1px solid rgba(255,255,255,.6);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 .finger{font-size:26px;animation:f 1.4s ease-in-out infinite;transform-origin:50% 100%}
@@ -206,12 +211,12 @@ body{
 .complete .d{font-size:15px;color:var(--gold2);line-height:1.7}
 
 .help{background:var(--navy);margin:6px 16px 24px;border-radius:16px;padding:22px 18px;text-align:center;box-shadow:0 14px 34px rgba(16,24,40,.16)}
-.help h3{font-family:"NanumMyeongjo", serif;font-size:19px;color:#fff;margin-bottom:5px}
+.help h3{font-family:"NanumMyeongjo", serif;font-size:19px;color:#fff;margin-bottom:5px;font-weight:800}
 .help p{font-size:15px;color:var(--gold2);margin-bottom:14px;line-height:1.6}
 .help a{display:inline-flex;gap:8px;align-items:center;background:var(--gold);color:#fff;text-decoration:none;font-size:20px;font-weight:900;padding:12px 26px;border-radius:999px;box-shadow:0 10px 20px rgba(184,150,90,.25)}
 .footer{border-top:1px solid rgba(232,228,222,.8);text-align:center;padding:14px;font-size:12px;color:#98a2b3}
 
-/* HL Editor UI (DEV에서만 생성됨) */
+/* HL Editor UI (DEV에서만 보임) */
 .hl-editor{
   position:fixed; right:14px; bottom:14px; z-index:9999;
   display:flex; gap:8px; align-items:center;
@@ -301,7 +306,11 @@ body{
 </section>
 
 <script>
-/* 한 줄로 DEV/PROD 제어 (개발할 때 true, 실서버에 둘 땐 true여도 상관없음 — 배포파일은 버튼이 prod로 뽑아줌) */
+/* =========================
+   ✅ 한 줄로 DEV/PROD 제어
+   - 개발: true  (HL 편집/배포 다운로드 버튼 보임)
+   - 배포: false (HL 관련 UI/기능 완전 비활성)
+========================= */
 const DEV_MODE = true;
 
 /* (선택) DEV에서만 수정값 유지하고 싶으면 true */
@@ -427,7 +436,6 @@ const esc=s=>(s||"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll("
     Object.assign(FLOWS, parsed);
   }catch(e){}
 })();
-
 function saveHL(){
   if(!DEV_MODE || !DEV_PERSIST_TO_LOCALSTORAGE) return;
   try{ localStorage.setItem("HL_DATA", JSON.stringify(FLOWS)); }catch(e){}
@@ -441,7 +449,6 @@ function completeEl(c){
   d.innerHTML=`<div class="emo">🎉</div><div class="t">${esc(c.title)}</div><div class="d">${esc(c.desc)}</div>`;
   return d;
 }
-
 function stepCard(n,st){
   const d=document.createElement("div");
   d.className="card";
@@ -483,7 +490,6 @@ function animate(){
   io=new IntersectionObserver(es=>es.forEach(e=>e.isIntersecting&&e.target.classList.add("in")),{threshold:.07});
   $$(".card").forEach(c=>{c.classList.remove("in"); io.observe(c);});
 }
-
 async function waitImgs(root){
   const imgs=$$("img",root);
   await Promise.all(imgs.map(i=>i.complete?0:new Promise(r=>{
@@ -492,6 +498,7 @@ async function waitImgs(root){
   })));
 }
 
+/* ✅ callout이 아래로 튀어나오면 shot-area padding-bottom 자동 증가 */
 function resetShotAreaPadding(){
   $$(".shot-area").forEach(shot=>{
     if(!shot.dataset.basePb){
@@ -501,7 +508,6 @@ function resetShotAreaPadding(){
     shot.style.paddingBottom = shot.dataset.basePb + "px";
   });
 }
-
 function expandShotAreaToFitCallouts(){
   $$(".card").forEach(card=>{
     const shot = $(".shot-area", card);
@@ -511,8 +517,8 @@ function expandShotAreaToFitCallouts(){
     const shotRect = shot.getBoundingClientRect();
     let maxBottom = shotRect.bottom;
 
-    /* callout은 spot-layer(shot 안)쪽에 있으니 shot 내부에서 탐색 */
-    $$(".callout", shot).forEach(co=>{
+    /* callout은 spot-layer 안에 있으므로 card 기준으로 찾는다 */
+    $$(".callout", card).forEach(co=>{
       const r = co.getBoundingClientRect();
       if(r.bottom > maxBottom) maxBottom = r.bottom;
     });
@@ -523,6 +529,7 @@ function expandShotAreaToFitCallouts(){
   });
 }
 
+/* highlight build */
 function buildSpot(){
   resetShotAreaPadding();
 
@@ -606,7 +613,11 @@ $("#back").addEventListener("click",back);
 $$(".tab").forEach(b=>b.addEventListener("click",()=>render(b.dataset.tab)));
 addEventListener("resize",()=>manual.style.display==="block"&&buildSpot());
 
-/* 배포용 HTML 생성 + 다운로드 */
+/* =========================
+   배포용 HTML 생성 + 다운로드
+   - DEV에서 편집한 FLOWS가 그대로 반영된 "HL 없는" HTML 파일 다운로드
+   - 중요: buildProdHTML 내부에서 </script> -> <\/script> 처리 (안그러면 화면에 코드가 찍힘)
+========================= */
 function downloadTextFile(filename, text){
   const blob = new Blob([text], {type:"text/html;charset=utf-8"});
   const a = document.createElement("a");
@@ -621,25 +632,29 @@ function downloadTextFile(filename, text){
 }
 
 function stripHLFromCSS(css){
-  /* PROD에서 HL editor 관련 스타일 제거 */
-  return css
-    .replace(/\/\*\s*HL Editor UI[\s\S]*?\*\/[\s\S]*?(?=<\/style>|$)/g,"")
-    .replace(/\.hl-editor\{[\s\S]*?\}\s*/g,"")
-    .replace(/\.hl-editor button\{[\s\S]*?\}\s*/g,"")
-    .replace(/\.hl-editor button:active\{[\s\S]*?\}\s*/g,"")
-    .replace(/\.hl-editor \.on\{[\s\S]*?\}\s*/g,"")
-    .replace(/\.hl-editor \.meta\{[\s\S]*?\}\s*/g,"")
-    .replace(/\.hl-rect\{[\s\S]*?\}\s*/g,"");
+  /* HL UI/편집 관련 스타일 제거 */
+  let out = css;
+
+  // hl-editor 블록부터 hl-rect 블록까지 통째로 제거
+  out = out.replace(/\/\*\s*HL Editor UI[\s\S]*?\*\/[\s\S]*?\.hl-rect\{[\s\S]*?\}\s*/g, "");
+
+  // 혹시 남아있으면 개별 제거
+  out = out.replace(/\.hl-editor\{[\s\S]*?\}\s*/g, "");
+  out = out.replace(/\.hl-editor\s+button\{[\s\S]*?\}\s*/g, "");
+  out = out.replace(/\.hl-editor\s+button:active\{[\s\S]*?\}\s*/g, "");
+  out = out.replace(/\.hl-editor\s+\.on\{[\s\S]*?\}\s*/g, "");
+  out = out.replace(/\.hl-editor\s+\.meta\{[\s\S]*?\}\s*/g, "");
+  out = out.replace(/\.hl-rect\{[\s\S]*?\}\s*/g, "");
+
+  return out;
 }
 
 function buildProdHTML(){
   const flowsJson = JSON.stringify(FLOWS);
-
   const styleEl = document.querySelector("style");
   const css = styleEl ? styleEl.innerHTML : "";
   const prodCss = stripHLFromCSS(css);
 
-  /* landing/manual DOM만 그대로 복제 (hl-editor UI는 runtime 생성이라 DOM에 없음) */
   const landingHTML = document.getElementById("landing")?.outerHTML || "";
   const manualHTML  = document.getElementById("manual")?.outerHTML || "";
 
@@ -650,8 +665,12 @@ function buildProdHTML(){
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3" />
 <title>비밀번호 찾기 안내 | 모나용평</title>
 
-<link rel="preload" href="/fonts/NanumBarunGothicSubset.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/fonts/NanumMyeongjo.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="./fonts/NanumBarunGothicSubset.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="./fonts/NanumBarunGothicLightSubset.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="./fonts/NanumBarunGothicUltraLightSubset.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="./fonts/NanumMyeongjo.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="./fonts/NanumMyeongjoBold.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="./fonts/NanumMyeongjoExtraBold.woff2" as="font" type="font/woff2" crossorigin>
 
 <style>
 ${prodCss}
@@ -678,7 +697,6 @@ function completeEl(c){
   d.innerHTML=\`<div class="emo">🎉</div><div class="t">\${esc(c.title)}</div><div class="d">\${esc(c.desc)}</div>\`;
   return d;
 }
-
 function stepCard(n,st){
   const d=document.createElement("div");
   d.className="card";
@@ -714,13 +732,11 @@ function stepCard(n,st){
   }
   return d;
 }
-
 function animate(){
   if(io) io.disconnect();
   io=new IntersectionObserver(es=>es.forEach(e=>e.isIntersecting&&e.target.classList.add("in")),{threshold:.07});
   $$(".card").forEach(c=>{c.classList.remove("in"); io.observe(c);});
 }
-
 async function waitImgs(root){
   const imgs=$$("img",root);
   await Promise.all(imgs.map(i=>i.complete?0:new Promise(r=>{
@@ -728,7 +744,6 @@ async function waitImgs(root){
     i.addEventListener("error",r,{once:true});
   })));
 }
-
 function resetShotAreaPadding(){
   $$(".shot-area").forEach(shot=>{
     if(!shot.dataset.basePb){
@@ -738,7 +753,6 @@ function resetShotAreaPadding(){
     shot.style.paddingBottom = shot.dataset.basePb + "px";
   });
 }
-
 function expandShotAreaToFitCallouts(){
   $$(".card").forEach(card=>{
     const shot = $(".shot-area", card);
@@ -748,7 +762,7 @@ function expandShotAreaToFitCallouts(){
     const shotRect = shot.getBoundingClientRect();
     let maxBottom = shotRect.bottom;
 
-    $$(".callout", shot).forEach(co=>{
+    $$(".callout", card).forEach(co=>{
       const r = co.getBoundingClientRect();
       if(r.bottom > maxBottom) maxBottom = r.bottom;
     });
@@ -758,7 +772,6 @@ function expandShotAreaToFitCallouts(){
     shot.style.paddingBottom = (basePB + extra) + "px";
   });
 }
-
 function buildSpot(){
   resetShotAreaPadding();
 
@@ -815,7 +828,6 @@ function buildSpot(){
 
   expandShotAreaToFitCallouts();
 }
-
 async function render(k){
   const data=FLOWS[k];
   setTab(k);
@@ -833,7 +845,6 @@ async function render(k){
   await waitImgs(flowRoot);
   buildSpot();
 }
-
 function openManual(k){ landing.style.display="none"; manual.style.display="block"; render(k); }
 function back(){ manual.style.display="none"; landing.style.display="flex"; window.scrollTo(0,0); }
 
@@ -841,7 +852,7 @@ $$(".choice-btn").forEach(b=>b.addEventListener("click",()=>openManual(b.dataset
 $("#back").addEventListener("click",back);
 $$(".tab").forEach(b=>b.addEventListener("click",()=>render(b.dataset.tab)));
 addEventListener("resize",()=>manual.style.display==="block"&&buildSpot());
-</script>
+<\/script>
 </body>
 </html>`;
 }
@@ -850,7 +861,7 @@ addEventListener("resize",()=>manual.style.display==="block"&&buildSpot());
    DEV HL Editor
 ========================= */
 let HL_EDIT=false;
-let hlTarget=null;
+let hlTarget=null; // { key, idx, st, screenEl }
 
 function ensureEditorUI(){
   if(!DEV_MODE) return;
@@ -894,13 +905,11 @@ function getCurrentFlowKey(){
   const on=document.querySelector(".tab.on");
   return on?on.dataset.tab:"app";
 }
-
 function findStepIndexFromScreen(screenEl){
   const cards=Array.from(document.querySelectorAll("#flowRoot .card"));
   const card=screenEl.closest(".card");
   return cards.indexOf(card);
 }
-
 function selectTargetFromEvent(e){
   const screen=e.target.closest(".screen");
   if(!screen) return null;
@@ -937,20 +946,20 @@ function applyHlToStep(st,rect){
 }
 
 function applyClipVarsToScreen(screenEl,hl){
-  const top=+hl.top, left=(hl.left!=null?+hl.left:(100-(+hl.right)-(+hl.w))), w=+hl.w, h=+hl.h;
+  const top=+hl.top;
+  const left=(hl.left!=null?+hl.left:(100-(+hl.right)-(+hl.w)));
+  const w=+hl.w, h=+hl.h;
   screenEl.style.setProperty("--ct", top+"%");
   screenEl.style.setProperty("--cl", left+"%");
   screenEl.style.setProperty("--cb", (100-(top+h))+"%");
   screenEl.style.setProperty("--cr", (100-(left+w))+"%");
 }
-
 function drawTempRect(screenEl,hl){
   let box=screenEl.querySelector(".hl-rect");
   if(!box){ box=document.createElement("div"); box.className="hl-rect"; screenEl.appendChild(box); }
   const left=(hl.left!=null?hl.left:(100-hl.right-hl.w));
   box.style.cssText=`top:${hl.top}%;left:${left}%;width:${hl.w}%;height:${hl.h}%;`;
 }
-
 function refreshOne(screenEl){
   if(!hlTarget) return;
   applyClipVarsToScreen(screenEl, hlTarget.st.hl);
