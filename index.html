@@ -616,7 +616,7 @@ addEventListener("resize",()=>manual.style.display==="block"&&buildSpot());
 /* =========================
    배포용 HTML 생성 + 다운로드
    - DEV에서 편집한 FLOWS가 그대로 반영된 "HL 없는" HTML 파일 다운로드
-   - 중요: buildProdHTML 내부에서 </script> -> <\/script> 처리 (안그러면 화면에 코드가 찍힘)
+   - 중요: buildProdHTML 내부에서 <\/script> -> <\/script> 처리 (안그러면 화면에 코드가 찍힘)
 ========================= */
 function downloadTextFile(filename, text){
   const blob = new Blob([text], {type:"text/html;charset=utf-8"});
