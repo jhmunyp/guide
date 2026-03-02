@@ -151,7 +151,7 @@ body{font-family:"Noto Sans KR",system-ui,sans-serif;background:var(--bg);color:
 .help a{display:inline-flex;gap:8px;align-items:center;background:var(--gold);color:#fff;text-decoration:none;font-size:20px;font-weight:900;padding:12px 26px;border-radius:999px;box-shadow:0 10px 20px rgba(184,150,90,.25)}
 .footer{border-top:1px solid rgba(232,228,222,.8);text-align:center;padding:14px;font-size:12px;color:#98a2b3}
 
-/* HL Editor UI (DEV에서만 보임) */
+/* DEV_ONLY_START */
 .hl-editor{
   position:fixed; right:14px; bottom:14px; z-index:9999;
   display:flex; gap:8px; align-items:center;
@@ -177,6 +177,7 @@ body{font-family:"Noto Sans KR",system-ui,sans-serif;background:var(--bg);color:
   box-shadow:0 12px 28px rgba(255,196,40,.18);
   border-radius:var(--r);
 }
+/* DEV_ONLY_END */
 </style>
 </head>
 
@@ -247,7 +248,8 @@ const DEV_MODE = true;
 /* (선택) DEV에서만 수정값 유지하고 싶으면 true */
 const DEV_PERSIST_TO_LOCALSTORAGE = true;
 
-const FLOWS={
+/* ======================= DATA ======================= */
+const FLOWS = {
   app:{
     title:'<img class="flow-icon" src="images/logo/mona_app.jpg"> 모바일 앱 — 비밀번호 찾기',
     steps:[
@@ -350,6 +352,7 @@ const FLOWS={
   }
 };
 
+/* ======================= UTIL ======================= */
 const $=(s,p=document)=>p.querySelector(s);
 const $$=(s,p=document)=>Array.from(p.querySelectorAll(s));
 const landing=$("#landing"), manual=$("#manual"), flowTitle=$("#flowTitle"), flowRoot=$("#flowRoot");
@@ -373,6 +376,7 @@ function saveHL(){
   try{ localStorage.setItem("HL_DATA", JSON.stringify(FLOWS)); }catch(e){}
 }
 
+/* ======================= RENDER ======================= */
 function setTab(k){ $$(".tab").forEach(b=>b.classList.toggle("on",b.dataset.tab===k)); }
 function arrowEl(){ const d=document.createElement("div"); d.className="arrow"; d.textContent="↓"; return d; }
 function completeEl(c){
@@ -545,7 +549,7 @@ $("#back").addEventListener("click",back);
 $$(".tab").forEach(b=>b.addEventListener("click",()=>render(b.dataset.tab)));
 addEventListener("resize",()=>manual.style.display==="block"&&buildSpot());
 
-/* 배포용 HTML 생성 + 다운로드 */
+/* ======================= DEPLOY ======================= */
 function downloadTextFile(filename, text){
   const blob = new Blob([text], {type:"text/html;charset=utf-8"});
   const a = document.createElement("a");
@@ -559,218 +563,28 @@ function downloadTextFile(filename, text){
   }, 0);
 }
 
+function stripDevOnlyBlocks(html){
+  return html.replace(/\/\* DEV_ONLY_START \*\/[\s\S]*?\/\* DEV_ONLY_END \*\//g, "");
+}
+
 function buildProdHTML(){
-  /* 현재 FLOWS(편집 반영됨)로 PROD HTML을 통째로 생성 */
-  const flowsJson = JSON.stringify(FLOWS);
+  // 1) 현재 문서 전체 HTML 가져오기
+  let html = "<!doctype html>\n" + document.documentElement.outerHTML;
 
-  return `<!doctype html>
-<html lang="ko">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3" />
-<title>비밀번호 찾기 안내 | 모나용평</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@600;700&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
-<style>
-${document.querySelector("style").innerHTML
-  /* PROD에서 HL editor 관련 스타일 제거 */
-  .replace(/\/\* HL Editor UI[\s\S]*?\.hl-rect\{[\s\S]*?\}\n?/g,"")
-}
-</style>
-</head>
-<body>
-${document.body.innerHTML
-  /* PROD에서 hl-editor DOM이 혹시 있으면 제거 */
-  .replace(/<div class="hl-editor">[\s\S]*?<\/div>/g,"")
-}
-<script>
-const FLOWS=${flowsJson};
+  // 2) DEV_ONLY 블록 제거 (CSS/JS 둘 다)
+  html = stripDevOnlyBlocks(html);
 
-const $=(s,p=document)=>p.querySelector(s);
-const $$=(s,p=document)=>Array.from(p.querySelectorAll(s));
-const landing=$("#landing"), manual=$("#manual"), flowTitle=$("#flowTitle"), flowRoot=$("#flowRoot");
-let io;
+  // 3) DEV_MODE 강제 false (배포 파일에서 DEV 켜질 일이 없게)
+  html = html.replace(/const DEV_MODE\s*=\s*true\s*;/, "const DEV_MODE = false;");
 
-const esc=s=>(s||"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;");
+  // 4) 로컬스토리지 옵션도 무의미하니 false로
+  html = html.replace(/const DEV_PERSIST_TO_LOCALSTORAGE\s*=\s*true\s*;/, "const DEV_PERSIST_TO_LOCALSTORAGE = false;");
 
-function setTab(k){ $$(".tab").forEach(b=>b.classList.toggle("on",b.dataset.tab===k)); }
-function arrowEl(){ const d=document.createElement("div"); d.className="arrow"; d.textContent="↓"; return d; }
-function completeEl(c){
-  const d=document.createElement("div");
-  d.className="complete";
-  d.innerHTML=\`<div class="emo">🎉</div><div class="t">\${esc(c.title)}</div><div class="d">\${esc(c.desc)}</div>\`;
-  return d;
+  return html;
 }
 
-function stepCard(n,st){
-  const d=document.createElement("div");
-  d.className="card";
-  d.innerHTML=\`
-    <div class="head">
-      <div class="num">\${n}</div>
-      <div>
-        <div class="title">\${st.t}</div>
-        \${st.sub?\`<div class="sub">\${st.sub}</div>\`:""}
-      </div>
-    </div>
-    <div class="shot-area">
-      <div class="phone">
-        <div class="screen">
-          <img class="img-blur \${st.full?"full":""}" src="\${st.img}" alt="\${esc(st.alt)}">
-          <img class="img-sharp \${st.full?"full":""}" src="\${st.img}" alt="">
-          <span data-hl
-            data-top="\${st.hl.top}"
-            \${st.hl.left!=null?\`data-left="\${st.hl.left}"\`:""}
-            \${st.hl.right!=null?\`data-right="\${st.hl.right}"\`:""}
-            data-w="\${st.hl.w}" data-h="\${st.hl.h}"
-            data-label="\${esc(st.hl.label||"")}"
-            \${st.hl.pos?\`data-pos="\${st.hl.pos}"\`:""}></span>
-        </div>
-        <div class="spot-layer"></div>
-      </div>
-    </div>\`;
-  if(st.tip){
-    const tip=document.createElement("div");
-    tip.className="tip";
-    tip.innerHTML=\`<div class="lbl">\${st.tip.lbl}</div><p>\${st.tip.html}</p>\`;
-    d.appendChild(tip);
-  }
-  return d;
-}
-
-function animate(){
-  if(io) io.disconnect();
-  io=new IntersectionObserver(es=>es.forEach(e=>e.isIntersecting&&e.target.classList.add("in")),{threshold:.07});
-  $$(".card").forEach(c=>{c.classList.remove("in"); io.observe(c);});
-}
-
-async function waitImgs(root){
-  const imgs=$$("img",root);
-  await Promise.all(imgs.map(i=>i.complete?0:new Promise(r=>{
-    i.addEventListener("load",r,{once:true});
-    i.addEventListener("error",r,{once:true});
-  })));
-}
-
-function resetShotAreaPadding(){
-  $$(".shot-area").forEach(shot=>{
-    if(!shot.dataset.basePb){
-      const cs = getComputedStyle(shot);
-      shot.dataset.basePb = String(parseFloat(cs.paddingBottom) || 0);
-    }
-    shot.style.paddingBottom = shot.dataset.basePb + "px";
-  });
-}
-
-function expandShotAreaToFitCallouts(){
-  $$(".card").forEach(card=>{
-    const shot = $(".shot-area", card);
-    if(!shot) return;
-
-    const basePB = parseFloat(shot.dataset.basePb || "0") || 0;
-    const shotRect = shot.getBoundingClientRect();
-    let maxBottom = shotRect.bottom;
-
-    $$(".callout", shot).forEach(co=>{
-      const r = co.getBoundingClientRect();
-      if(r.bottom > maxBottom) maxBottom = r.bottom;
-    });
-
-    const overflow = maxBottom - shotRect.bottom;
-    const extra = overflow > 0 ? Math.ceil(overflow) + 16 : 0;
-    shot.style.paddingBottom = (basePB + extra) + "px";
-  });
-}
-
-function buildSpot(){
-  resetShotAreaPadding();
-
-  $$(".phone").forEach(p=>{
-    const s=$(".screen",p);
-    const layer=$(".spot-layer",p);
-    if(!s || !layer) return;
-
-    $$(".ring",s).forEach(x=>x.remove());
-    $$(".callout",layer).forEach(x=>x.remove());
-
-    const hl=$("[data-hl]",s);
-    if(!hl) return;
-
-    const top=+hl.dataset.top, w=+hl.dataset.w, h=+hl.dataset.h;
-    const left0 = hl.dataset.left!=null ? +hl.dataset.left : null;
-    const right0= hl.dataset.right!=null ? +hl.dataset.right: null;
-    const label=hl.dataset.label||"", pos=hl.dataset.pos||"below";
-    const left = (right0!=null) ? (100 - right0 - w) : left0;
-
-    const ct=top, cl=left, cb=100-(top+h), cr=100-(left+w);
-    s.style.setProperty("--ct", ct+"%");
-    s.style.setProperty("--cr", cr+"%");
-    s.style.setProperty("--cb", cb+"%");
-    s.style.setProperty("--cl", cl+"%");
-
-    const ring=document.createElement("div");
-    ring.className="ring";
-    ring.style.cssText=\`top:\${top}%;left:\${left}%;width:\${w}%;height:\${h}%;\`;
-    s.appendChild(ring);
-
-    const sRect=s.getBoundingClientRect();
-    const pRect=p.getBoundingClientRect();
-
-    const hlLeftPx=(sRect.left-pRect.left)+(left/100)*sRect.width;
-    const hlTopPx =(sRect.top -pRect.top )+(top /100)*sRect.height;
-    const hlWPx   =(w/100)*sRect.width;
-    const hlHPx   =(h/100)*sRect.height;
-
-    const c=document.createElement("div");
-    c.className="callout";
-
-    const gap=8;
-    const cTopPx=(pos==="above") ? (hlTopPx-18) : (hlTopPx+hlHPx+gap);
-    const midPx=hlLeftPx+(hlWPx/2);
-
-    c.style.cssText=\`top:\${cTopPx}px;left:\${midPx}px;transform:translateX(-50%);\`;
-    c.innerHTML=(pos==="above")
-      ? \`<div class="bub">\${esc(label)}</div><div class="line" style="transform:scaleY(-1)"><div></div></div><div class="finger">👆</div>\`
-      : \`<div class="finger">👆</div><div class="line"><div></div></div><div class="bub">\${esc(label)}</div>\`;
-
-    layer.appendChild(c);
-  });
-
-  expandShotAreaToFitCallouts();
-}
-
-async function render(k){
-  const data=FLOWS[k];
-  setTab(k);
-  flowTitle.innerHTML=data.title;
-  flowRoot.innerHTML="";
-
-  data.steps.forEach((st,i)=>{
-    flowRoot.appendChild(stepCard(i+1,st));
-    if(i<data.steps.length-1) flowRoot.appendChild(arrowEl());
-  });
-  if(data.complete) flowRoot.appendChild(completeEl(data.complete));
-
-  window.scrollTo(0,0);
-  animate();
-  await waitImgs(flowRoot);
-  buildSpot();
-}
-
-function openManual(k){ landing.style.display="none"; manual.style.display="block"; render(k); }
-function back(){ manual.style.display="none"; landing.style.display="flex"; window.scrollTo(0,0); }
-
-$$(".choice-btn").forEach(b=>b.addEventListener("click",()=>openManual(b.dataset.go)));
-$("#back").addEventListener("click",back);
-$$(".tab").forEach(b=>b.addEventListener("click",()=>render(b.dataset.tab)));
-addEventListener("resize",()=>manual.style.display==="block"&&buildSpot());
-</script>
-</body>
-</html>`;
-}
-
-/* DEV HL Editor */
+/* DEV_ONLY_START */
+/* ======================= DEV HL EDITOR ======================= */
 let HL_EDIT=false;
 let hlTarget=null;
 
@@ -855,7 +669,6 @@ function applyHlToStep(st,rect){
   delete st.hl.right;
   st.hl.w=rect.w;
   st.hl.h=rect.h;
-
   saveHL();
 }
 
@@ -935,6 +748,7 @@ function enableHLDrag(){
   enableHLSelection();
   enableHLDrag();
 })();
+/* DEV_ONLY_END */
 </script>
 </body>
 </html>
